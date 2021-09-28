@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" width="1000" height="1000"><rect width="1000" height="1000" rx="200" ry="200" fill="#60584c"></rect><g transform="matrix(3.5,0,0,3.5,149.98760223388672,150.0180459022522)"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" width="200" height="200"><svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+	<title>Rhea</title>
+	<style>
+		tspan { white-space:pre }
+		.shp0 { fill: #fff }
+		.shp1 { fill: #ffbc00 }
+	</style>
+	<path id="Layer" class="shp0" d="M167 60.82L121 76.84L121 60.82L100 48.81L79 60.82L79 194L33 194L33 48.81C33.07 47.74 33.29 46.68 33.64 45.67C34 44.66 34.49 43.7 35.1 42.82C35.72 41.95 36.45 41.16 37.28 40.47C38.1 39.79 39.02 39.23 40 38.79L90 9.75C90 9.75 100.67 1.28 110 9.75L160 38.79C161.04 39.13 162.03 39.63 162.91 40.28C163.79 40.93 164.56 41.72 165.19 42.62C165.82 43.52 166.3 44.51 166.6 45.56C166.91 46.62 167.05 47.71 167 48.81L167 60.82Z"></path>
+	<path id="Layer" class="shp1" d="M167 114.9L121 97.88L121 194L167 194L167 114.9Z"></path>
+</svg></svg></g></svg>

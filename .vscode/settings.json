@@ -1,0 +1,18 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "editor.formatOnSave": true,
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+  "files.trimTrailingWhitespace": true,
+  "html.format.extraLiners": "",
+  "html.format.wrapLineLength": 0,
+  "eslint.validate": [
+    { "language": "vue", "autoFix": true }, //vue 체크
+    { "language": "javascript", "autoFix": true }, //자바스크립트 체크
+    { "language": "html", "autoFix": true } //HTML 체크 <div></div> -> <div />
+  ],
+  "eslint.autoFixOnSave": true,
+  "eslint.alwaysShowStatus": true
+}
