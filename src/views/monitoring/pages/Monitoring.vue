@@ -87,13 +87,14 @@
               @change="changeDate"
             />
           </div>
-        </div>
-        <div class="right-part">
+          <!--// 최근/기간 선택 (periodYN) -->
           <div class="tool">
             <button type="button" class="btn" @click="searchGroupJobs">
               조회
             </button>
           </div>
+        </div>
+        <div class="right-part">
           <div class="tool">
             <button
               title="새로고침"
@@ -147,7 +148,7 @@
         </div>
       </div>
 
-      <alert-status-table class="mt-12" :alert-status-data="alertStatusList" />
+      <alert-status-table class="mt-12" :alert-status-data="alertStatusList" :status-type="2" @callback="openEventLogModal" />
 
       <section
         v-if="groupJobsList.length"
@@ -164,6 +165,7 @@
         />
       </section>
     </div>
+    <event-modal ref="eventDetailModal" />
   </main>
 </template>
 
@@ -176,7 +178,7 @@ import {
   SelectBox, AlertStatusTable, Info, DatePicker,
 } from '@/components';
 import { SELECT_OPTIONS } from '@/views/monitoring/constants';
-import { GroupJobPanel } from '@/views/monitoring/modules';
+import { GroupJobPanel, EventModal } from '@/views/monitoring/modules';
 import { setLocalStorage } from '@/utils';
 
 export default {
@@ -187,10 +189,12 @@ export default {
     Info,
     DatePicker,
     GroupJobPanel,
+    EventModal,
   },
   setup() {
     const { instance } = getInstance();
     const { SEARCH_DURING } = SELECT_OPTIONS;
+    const ref = instance.$refs as any;
 
     const state = reactive({
       selectSearchDuring: SEARCH_DURING,
@@ -329,6 +333,7 @@ export default {
         id: state.groupJobsList[idx].id,
         startDate: state.startDate,
         endDate: state.endDate,
+        searchType: state.groupJobsList[idx].installationType === 'VM' ? 'CPU,Memory,Storage,NetworkReception' : 'Node,Pod,PodError',
       };
 
       await instance.$store.dispatch(
@@ -368,6 +373,21 @@ export default {
         }
       }
       getMonitoringDetailAction();
+    };
+
+    const openEventLogModal = (type) => {
+      const eventModalData = {
+        type,
+        visible: true,
+        organizationID: state.organizationID,
+        prometheusID: state.prometheusID,
+        searchDuring: state.searchData.searchDuring,
+        periodYN: state.periodYN,
+        startDate: state.startDate,
+        endDate: state.endDate,
+      };
+
+      ref.eventDetailModal.openModal(eventModalData);
     };
 
     const applyQueryData = async () => {
@@ -412,6 +432,7 @@ export default {
       refreshChartData,
       getMonitoringDetailAction,
       moveLink,
+      openEventLogModal,
     };
   },
 };
@@ -426,7 +447,6 @@ export default {
   display: inline-flex;
   align-items: center;
   vertical-align: top;
-  font-weight: 400;
 }
 .link.g {
   color: var(--grafana);
@@ -437,50 +457,9 @@ export default {
 .link img {
   width: 17px;
   height: 17px;
-  margin-right: 8px;
+  margin-right: 3px;
 }
 .link span {
   padding-top: 2px;
-}
-
-.toggle {
-  position: relative;
-}
-.toggle .inp-c {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  clip: rect(0, 0, 0, 0);
-}
-.toggle .label {
-  position: relative;
-  display: inline-block;
-  vertical-align: top;
-  width: 100px;
-  height: 40px;
-  background: linear-gradient(to right, var(--KB-gray) 50%, #d1d1d1 50%);
-  border-radius: 0.375rem;
-  cursor: pointer;
-}
-.toggle .inp-c:checked + .label {
-  background: linear-gradient(to left, var(--KB-gray) 50%, #d1d1d1 50%);
-}
-.toggle .label::before,
-.toggle .label::after {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 15px;
-  color: #fff;
-}
-
-.toggle .label::before {
-  left: 11px;
-  content: "최근";
-}
-.toggle .label::after {
-  right: 11px;
-  content: "기간";
 }
 </style>

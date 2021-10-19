@@ -68,6 +68,7 @@ export const getGroupJobsList = async ({ commit }: ActionContext<MonitoringState
     const { contents } = data;
 
     contents.groupinfo.forEach((v) => {
+      v.installationType = contents.installationType;
       v.prometheusName = contents.name;
     });
 

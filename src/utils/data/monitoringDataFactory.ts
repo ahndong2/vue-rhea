@@ -16,15 +16,15 @@ const MONITORING = {
   podListSummary: 'podListSummary',
 };
 
+// monitoring/monitoringDetailDivide api 호출시
 export const setMonitoringListDataFactory = (data) => {
   const rtn = {};
   const keys: string[] = Object.keys(data);
-
   for (let i = 0; i < keys.length; i++) {
     const key = keys[i];
     let monitoring = data[key];
     if (Object.keys(MONITORING.chartList).includes(key)) {
-      monitoring = monitoring.data.result.map((v) => {
+      monitoring = !monitoring ? [] : monitoring.data.result.map((v) => {
         const val = v.value || v.values;
         return val.map((v2) => ({
           x: v2[0],
@@ -38,3 +38,27 @@ export const setMonitoringListDataFactory = (data) => {
   }
   return rtn;
 };
+
+// // monitoring/monitoringDetail api 호출시
+// export const setMonitoringListDataFactory = (data) => {
+//   const rtn = {};
+//   const keys: string[] = Object.keys(data);
+
+//   for (let i = 0; i < keys.length; i++) {
+//     const key = keys[i];
+//     let monitoring = data[key];
+//     if (Object.keys(MONITORING.chartList).includes(key)) {
+//       monitoring = monitoring.data.result.map((v) => {
+//         const val = v.value || v.values;
+//         return val.map((v2) => ({
+//           x: v2[0],
+//           y: v2[1],
+//           metric: v.metric,
+//           key,
+//         }));
+//       });
+//     }
+//     rtn[key] = monitoring;
+//   }
+//   return rtn;
+// };

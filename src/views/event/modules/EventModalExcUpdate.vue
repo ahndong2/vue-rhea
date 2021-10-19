@@ -1,5 +1,5 @@
 <template>
-  <modal :id="id" :visible="proxyVisible" @closeModal="closeModal">
+  <modal :id="id" :visible="proxyVisible" size="sm" @closeModal="closeModal">
     <template #header>
       <h3>Event 예외 조회/취소</h3>
     </template>
@@ -36,7 +36,7 @@
             {{ data.errorType }}
           </div>
         </li>
-        <li class="flex-col">
+        <li class="flex-row">
           <strong class="tit">예외 처리 사유</strong>
           <div class="con">
             {{ ignoreReason }}

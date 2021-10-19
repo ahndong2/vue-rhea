@@ -23,10 +23,16 @@ interface NoticeBoard {
   content : Array<Notice>,
   totalElements : number;
 }
+interface NoticePost {
+  id?: number;
+  title: string;
+  content: string;
+}
 interface BoardState {
   dashBoardNoticeBoardList?: Array<Notice>;
   noticeBoard?: NoticeBoard;
   searchParam?: BoardSearchParam;
+  noticePost?: NoticePost;
 }
 
 // global
@@ -51,10 +57,19 @@ interface AlertObj {
   startDate?: number|string;
   endDate?: number|string;
 }
-
+interface Menu {
+  description?: string;
+  id?: number;
+  name?: string;
+  resourceUrl?: string;
+  status?: string;
+  [key:string]: unknown;
+}
 interface GlobalState {
   userInfo?: UserInfo;
   spinner? : boolean;
+  menuListOrigin?: Menu[];
+  menuList?: Menu[];
 }
 
 // monitoring
@@ -250,9 +265,9 @@ interface RootState {
 
 export {
   RootState,
-  GlobalState, UserInfo,
+  GlobalState, UserInfo, Menu,
   DashboardState, SummaryType, OrgMonitoringList, Prometheus, GroupInfo, AlertObj,
-  BoardState, Notice, Board, BoardSearchParam, NoticeBoard,
+  BoardState, Notice, Board, BoardSearchParam, NoticeBoard, NoticePost,
   EventState, EventLog, EventSearchParam,
   MonitoringState, MonitoringDetail, Monitoring, MetricData, ChartData, SearchData,
 };

@@ -1,4 +1,4 @@
-userInfo: computed(() => instance.$store.state.global.userInfo),<template>
+<template>
   <main id="content" class="content-wrapper notice">
     <div class="content-head">
       <h2 class="content-title">
@@ -7,24 +7,21 @@ userInfo: computed(() => instance.$store.state.global.userInfo),<template>
     </div>
 
     <notice-table />
-    <a v-if="isAdmin"
-       href="/backoffice/board/400/create"
-       class="btn-write"
-    >
+    <router-link v-if="isAdmin" :to="{ name: 'NoticeWrite'}" class="btn-write">
       등록
-    </a>
+    </router-link>
   </main>
 </template>
 
 <script lang="ts">
 import {
-  reactive, toRefs, onMounted, computed, watch,
+  reactive, toRefs, onMounted, computed,
 } from '@vue/composition-api';
 import { getInstance } from '@/composable';
 import NoticeTable from '../modules/NoticeTable.vue';
 
 export default {
-  name: 'Notice',
+  name: 'NoticeList',
   components: {
     NoticeTable,
   },
@@ -55,16 +52,15 @@ export default {
   text-align: left;
   white-space: normal;
 }
-::v-deep .btn-write {
+.btn-write {
   position: absolute;
   bottom: 0;
-  right: 0;
+  right: 1.5rem;
   min-width: 100px;
   height: 40px;
   line-height: 40px;
   text-align: center;
-  font-size: 0.97rem;
-  border-radius: 4px;
+  border-radius: .25rem;
   color: #fff;
   background-color: var(--KB-gray);
 }

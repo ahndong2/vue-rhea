@@ -13,6 +13,10 @@ const state: BoardState = {
     size: 10,
     paged: 10,
   },
+  noticePost: {
+    title: '',
+    content: '',
+  },
 };
 
 export default {

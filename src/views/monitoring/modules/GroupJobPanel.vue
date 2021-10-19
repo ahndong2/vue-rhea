@@ -10,14 +10,15 @@
           <span>{{ groupJob.name }}</span>
         </button>
       </dt>
+
       <dd v-if="activeIdx === idx" class="accordion-content">
         <ul v-if="groupJob.chartData" class="panel-list">
           <fragment v-if="groupJob.chartData.cpuList.length > 0">
             <li class="col-span-6 lg:col-span-3">
               <div class="panel">
                 <div class="panel-header">
-                  <span class="panel-title">CPU Usage (%)</span>
-                  <!-- <em class="period">현재 시점 기준</em> -->
+                  <span class="panel-title">CPU Usage</span>
+                  <em class="period">(단위: %)</em>
                 </div>
                 <div class="panel-content">
                   <div class="chart-wrapper">
@@ -32,8 +33,8 @@
             <li class="col-span-6 lg:col-span-3">
               <div class="panel">
                 <div class="panel-header">
-                  <span class="panel-title">Memory Usage (%)</span>
-                  <!-- <em class="period">현재 시점 기준</em> -->
+                  <span class="panel-title">Memory Usage</span>
+                  <em class="period">(단위: %)</em>
                 </div>
                 <div class="panel-content">
                   <div class="chart-wrapper">
@@ -44,12 +45,28 @@
             </li>
           </fragment>
 
+          <fragment v-if="groupJob.chartData.storageList.length > 0">
+            <li class="col-span-6 lg:col-span-3">
+              <div class="panel">
+                <div class="panel-header">
+                  <span class="panel-title">Storage Usage</span>
+                  <em class="period">(단위: %)</em>
+                </div>
+                <div class="panel-content">
+                  <div class="chart-wrapper">
+                    <multi-chart :width="500" :height="300" class="chart" :chart-data="setLineChartDataSet(groupJob.chartData.storageList)" :options="lineChartOptions" />
+                  </div>
+                </div>
+              </div>
+            </li>
+          </fragment>
+
           <fragment v-if="groupJob.chartData.networkReceptionList.length > 0">
             <li class="col-span-6 lg:col-span-3">
               <div class="panel">
                 <div class="panel-header">
-                  <span class="panel-title">Network Reception (Mbps)</span>
-                  <!-- <em class="period">현재 시점 기준</em> -->
+                  <span class="panel-title">Network Reception</span>
+                  <em class="period">(단위: Mbps)</em>
                 </div>
                 <div class="panel-content">
                   <div class="chart-wrapper">
@@ -65,7 +82,6 @@
               <div class="panel">
                 <div class="panel-header">
                   <span class="panel-title">Network Send</span>
-                  <em class="period">현재 시점 기준</em>
                 </div>
                 <div class="panel-content">
                   <div class="chart-wrapper">
@@ -76,28 +92,11 @@
             </li>
           </fragment> -->
 
-          <fragment v-if="groupJob.chartData.storageList.length > 0">
-            <li class="col-span-6 lg:col-span-3">
-              <div class="panel">
-                <div class="panel-header">
-                  <span class="panel-title">Storage Usage (%)</span>
-                  <!-- <em class="period">현재 시점 기준</em> -->
-                </div>
-                <div class="panel-content">
-                  <div class="chart-wrapper">
-                    <multi-chart :width="500" :height="300" class="chart" :chart-data="setLineChartDataSet(groupJob.chartData.storageList)" :options="lineChartOptions" />
-                  </div>
-                </div>
-              </div>
-            </li>
-          </fragment>
-
           <!-- <fragment v-if="groupJob.chartData.systemLoadList.length > 0">
             <li class="col-span-6 lg:col-span-3">
               <div class="panel">
                 <div class="panel-header">
                   <span class="panel-title">System Load</span>
-                  <em class="period">현재 시점 기준</em>
                 </div>
                 <div class="panel-content">
                   <div class="chart-wrapper">
@@ -108,81 +107,23 @@
             </li>
           </fragment> -->
 
-          <li v-if="groupJob.chartData.podList.podDisabledList.length > 0 || groupJob.chartData.podList.podAbledList.length > 0" class="col-span-6 lg:col-span-3">
-            <div class="panel">
-              <div class="panel-header">
-                <span class="panel-title">Pod Status</span>
-                <em class="period">현재 시점 기준 <br>(과거 날짜로 조회 시 pod/node의 과거 기준 그래프 지원은 안됨.)</em>
-              </div>
-              <div class="panel-content">
-                <div class="status">
-                  <div class="count">
-                    <dl>
-                      <dt class="tit">
-                        Pending
-                      </dt>
-                      <dd class="cnt">
-                        {{ groupJob.chartData.podList.pendingCount }}
-                      </dd>
-                    </dl>
-                    <dl>
-                      <dt class="tit">
-                        Failed
-                      </dt>
-                      <dd class="cnt">
-                        {{ groupJob.chartData.podList.failedCount }}
-                      </dd>
-                    </dl>
-                    <dl>
-                      <dt class="tit">
-                        Unknown
-                      </dt>
-                      <dd class="cnt">
-                        {{ groupJob.chartData.podList.unknownCount }}
-                      </dd>
-                    </dl>
-                    <dl class="text-blue-500">
-                      <dt class="tit">
-                        Running
-                      </dt>
-                      <dd class="cnt">
-                        {{ groupJob.chartData.podList.runningCount }}
-                      </dd>
-                    </dl>
-                    <dl class="text-green-500">
-                      <dt class="tit">
-                        Succeeded
-                      </dt>
-                      <dd class="cnt">
-                        {{ groupJob.chartData.podList.succeededCount }}
-                      </dd>
-                    </dl>
-                  </div>
-                  <div class="dots">
-                    <ul>
-                      <indicator v-for="(indicator, j) in groupJob.chartData.podList.podDisabledList" :key="j"
-                                 class="text-red-500" :content="indicator.pod"
-                      />
-                      <indicator v-for="(indicator, j) in groupJob.chartData.podList.podAbledList" :key="j"
-                                 :class="indicator.phase.includes('Running') ? 'text-blue-500' : 'text-green-500'"
-                                 :content="indicator.pod"
-                      />
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </li>
-
-          <li v-if="groupJob.chartData.nodeList.nodeAbledList.length > 0 || groupJob.chartData.nodeList.nodeDisabledList.length > 0" class="col-span-6 lg:col-span-3">
+          <li v-if="groupJob.chartData.nodeList && (groupJob.chartData.nodeList.nodeAbledList.length > 0 || groupJob.chartData.nodeList.nodeDisabledList.length > 0)" class="col-span-6 lg:col-span-3">
             <div class="panel">
               <div class="panel-header">
                 <span class="panel-title">Node Status</span>
-                <em class="period">현재 시점 기준 <br>(과거 날짜로 조회 시 pod/node의 과거 기준 그래프 지원은 안됨.)</em>
+                <em class="period">현재 시점 기준 <br>(과거 날짜로 조회 시 Node/Pod의 과거 기준 그래프 지원은 안됨.)</em>
               </div>
               <div class="panel-content">
                 <div class="status">
                   <div class="count">
+                    <dl class="text-green-500">
+                      <dt class="tit">
+                        Ready
+                      </dt>
+                      <dd class="cnt">
+                        {{ groupJob.chartData.nodeList.readyCount }}
+                      </dd>
+                    </dl>
                     <dl>
                       <dt class="tit">
                         Disk<br>Pressure
@@ -215,14 +156,6 @@
                         {{ groupJob.chartData.nodeList.networkUnavailableCount }}
                       </dd>
                     </dl>
-                    <dl class="text-green-500">
-                      <dt class="tit">
-                        Ready
-                      </dt>
-                      <dd class="cnt">
-                        {{ groupJob.chartData.nodeList.readyCount }}
-                      </dd>
-                    </dl>
                   </div>
                   <div class="dots">
                     <ul>
@@ -239,12 +172,77 @@
             </div>
           </li>
 
+          <li v-if="groupJob.chartData.podList && (groupJob.chartData.podList.podDisabledList.length > 0 || groupJob.chartData.podList.podAbledList.length > 0)" class="col-span-6 lg:col-span-3">
+            <div class="panel">
+              <div class="panel-header">
+                <span class="panel-title">Pod Status</span>
+                <em class="period">현재 시점 기준 <br>(과거 날짜로 조회 시 Node/Pod의 과거 기준 그래프 지원은 안됨.)</em>
+              </div>
+              <div class="panel-content">
+                <div class="status">
+                  <div class="count">
+                    <dl>
+                      <dt class="tit">
+                        Pending
+                      </dt>
+                      <dd class="cnt">
+                        {{ groupJob.chartData.podList.pendingCount }}
+                      </dd>
+                    </dl>
+                    <dl class="text-green-400">
+                      <dt class="tit">
+                        Running
+                      </dt>
+                      <dd class="cnt">
+                        {{ groupJob.chartData.podList.runningCount }}
+                      </dd>
+                    </dl>
+                    <dl class="text-green-600">
+                      <dt class="tit">
+                        Succeeded
+                      </dt>
+                      <dd class="cnt">
+                        {{ groupJob.chartData.podList.succeededCount }}
+                      </dd>
+                    </dl>
+                    <dl>
+                      <dt class="tit">
+                        Failed
+                      </dt>
+                      <dd class="cnt">
+                        {{ groupJob.chartData.podList.failedCount }}
+                      </dd>
+                    </dl>
+                    <dl>
+                      <dt class="tit">
+                        Unknown
+                      </dt>
+                      <dd class="cnt">
+                        {{ groupJob.chartData.podList.unknownCount }}
+                      </dd>
+                    </dl>
+                  </div>
+                  <div class="dots">
+                    <ul>
+                      <indicator v-for="(indicator, j) in groupJob.chartData.podList.podDisabledList" :key="j"
+                                 class="text-red-500" :content="indicator.pod"
+                      />
+                      <indicator v-for="(indicator, j) in groupJob.chartData.podList.podAbledList" :key="j"
+                                 :class="indicator.phase.includes('Succeeded') ? 'text-green-600' : 'text-green-400'"
+                                 :content="indicator.pod"
+                      />
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+
           <fragment v-if="groupJob.chartData.podErrorList.length > 0">
             <li class="col-span-6 lg:col-span-3">
               <div class="panel">
                 <div class="panel-header">
                   <span class="panel-title">Pod Error</span>
-                  <!-- <em class="period">현재 시점 기준 <br>(과거 날짜로 조회 시 pod/node/pod error의 과거 기준 그래프 지원은 안됨.)</em> -->
                 </div>
                 <div class="panel-content">
                   <div class="chart-wrapper">
@@ -341,16 +339,17 @@ export default {
             label: ((tooltipItems, data) => {
               const { metric, y, key } = data.datasets[tooltipItems.datasetIndex].data[tooltipItems.index];
               let value;
+              let tooltipArray = [`instance : ${metric.instance}`,
+                `job : ${metric.job}`,
+                `nodename : ${metric.nodename}`];
               if (key === 'networkReceptionList') {
                 value = y;
+                tooltipArray.unshift(`device: ${metric.device}`);
               } else {
                 value = y.indexOf('.') === -1 ? y : Number(y).toFixed(3);
               }
 
-              let tooltipArray = [`value: ${value}`,
-                `instance : ${metric.instance}`,
-                `job : ${metric.job}`,
-                `nodename : ${metric.nodename}`];
+              tooltipArray.unshift(`value: ${value}`);
               if (!metric.nodename) {
                 tooltipArray = tooltipArray.slice(0, -1);
               }
@@ -370,7 +369,7 @@ export default {
           pointRadius: 1,
           fill: false,
           borderColor: CHART_COLORS[idx % CHART_COLORS.length],
-          borderWidth: 2,
+          borderWidth: 1,
           tension: 0.1,
         });
       });
@@ -407,7 +406,7 @@ export default {
 .accordion-header .btn-toggle {
   display: flex;
   font-weight: 700;
-  font-size: 1.2rem;
+  font-size: 18px;
   text-transform: capitalize;
 }
 .accordion-header svg {
@@ -443,6 +442,7 @@ export default {
   word-wrap: break-word;
   background: var(--white);
   border-radius: 4px;
+  cursor: default;
 }
 .panel-header {
   overflow: hidden;
@@ -454,23 +454,23 @@ export default {
   display: inline-block;
   max-width: 80%;
   margin-left: 24px;
-  font-size: 17px;
   color: #333;
   white-space: nowrap;
   text-overflow: ellipsis;
+  letter-spacing: .5px;
 }
 .period {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   right: 0;
-  margin-right: 20px;
+  margin-right: 24px;
+  padding-top: 2px;
   text-align: right;
   font-size: 13px;
   line-height: 1.2;
   color: #999;
   text-transform: capitalize;
-  letter-spacing: 0;
 }
 .panel-content {
   position: relative;
@@ -512,7 +512,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 3rem;
+  height: 45px;
   line-height: 1.2;
   font-size: 13px;
   color: var(--KB-silver);
@@ -520,6 +520,7 @@ export default {
 }
 .status .count .cnt {
   overflow: hidden;
+  height: 25px;
   font-weight: 700;
   font-size: 17px;
   white-space: nowrap;
@@ -528,7 +529,6 @@ export default {
 /* dots */
 .status .dots {
   padding: 22px;
-  text-align: center;
 }
 .dots > ul {
   display: inline-flex;

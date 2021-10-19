@@ -1,23 +1,9 @@
 import { ActionContext } from 'vuex';
-import { getAuthInfoAPI } from '@/api/global';
-import { GlobalState, RootState } from '@/store/type';
+import { getAuthInfoAPI, getMenuListAPI } from '@/api/global';
+import { GlobalState, RootState, Menu } from '@/store/type';
 
-export const getAuthInfo = async ({ commit, state }: ActionContext<GlobalState, RootState>): Promise<void> => {
+export const getAuthInfo = async ({ commit }: ActionContext<GlobalState, RootState>): Promise<void> => {
   await getAuthInfoAPI().then((res) => {
-    // if (!res) {
-    //   commit('setUserInfo', {
-    //     department: 'department',
-    //     name: 'name',
-    //     position: 'position',
-    //     roleList: [
-    //       {
-    //         description: 'ADMIN',
-    //         id: 0,
-    //         name: 'ADMIN',
-    //         status: 'ACTIVE',
-    //       }],
-    //   });
-    // }
     const { data } = res;
     commit('setUserInfo', data.contents);
   });
@@ -25,4 +11,18 @@ export const getAuthInfo = async ({ commit, state }: ActionContext<GlobalState, 
 
 export const setSpinner = ({ commit }: ActionContext<GlobalState, RootState>, spinner):void => {
   commit('setSpinner', spinner);
+};
+
+export const getMenuList = async ({ commit }: ActionContext<GlobalState, RootState>): Promise<void> => {
+  await getMenuListAPI().then((res) => {
+    const { data } = res;
+    const menuList = [] as Menu[];
+    if (data.contents.length > 0) {
+      Object.keys(data.contents[0].menuVos).forEach((v) => {
+        const menu = data.contents[0].menuVos[v][0] as Menu;
+        menuList.push(menu);
+      });
+    }
+    commit('setMenuListOrigin', menuList);
+  });
 };

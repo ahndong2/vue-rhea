@@ -91,8 +91,7 @@ export default {
   display: inline-block;
   width: 17px;
   height: 17px;
-  padding-left: 1px;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 20px;
   text-align: center;
   color: var(--white);
@@ -126,7 +125,6 @@ export default {
   padding: 10px 15px;
   font-weight: 400;
   font-size: 15px;
-  letter-spacing: 0;
   color: #333;
 }
 .info-close {

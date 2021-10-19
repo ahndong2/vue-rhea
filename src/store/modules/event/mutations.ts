@@ -2,7 +2,6 @@ import { EventState, EventLog, EventSearchParam } from '@/store/type';
 import { RespEventLogState } from '@/api/type';
 
 export const initData = (state: EventState): void => {
-  state.orgList = [];
   state.eventOccurredList = [];
   state.eventUnresolvedList = [];
   state.eventIgnoreList = [];

@@ -5,3 +5,8 @@ export const getAuthInfoAPI = (): Promise<AxiosResponse> => API.request({
   url: 'user/auth-info',
   // params: param,
 });
+
+export const getMenuListAPI = (): Promise<AxiosResponse> => API.request({
+  method: 'GET',
+  url: 'admin/menu/front',
+});

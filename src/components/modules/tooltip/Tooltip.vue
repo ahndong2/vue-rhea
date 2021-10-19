@@ -49,7 +49,6 @@ export default {
   width: 300px;
   padding: 12px 15px;
   font-size: 15px;
-  letter-spacing: 0.5px;
   color: #333;
   background: #fff;
   border: 1px solid #ccc;

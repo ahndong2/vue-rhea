@@ -23,37 +23,13 @@
         </a>
       </div>
     </div>
-    <nav v-if="menuVisible" class="gnb">
+    <nav v-if="menuVisible" class="side-menu">
       <ul class="front">
-        <li class="home">
-          <router-link :to="{ path: '/'}" @click.native="toggleMenu">
-            Home
+        <li v-for="menu in menuList" :key="menu.name">
+          <router-link v-if="!menu.backoffice" :class="menu.class" :to="menu.resourceUrl" @click.native="toggleMenu">
+            {{ menu.name }}
           </router-link>
-        </li>
-        <li class="event">
-          <router-link :to="{ path: '/vue/event',query: { tabKey: 'Occurred' }}" @click.native="toggleMenu">
-            이벤트
-          </router-link>
-        </li>
-        <li class="monitoring">
-          <router-link :to="{ path: '/vue/monitoring'}" @click.native="toggleMenu">
-            모니터링
-          </router-link>
-        </li>
-        <li class="notice">
-          <router-link :to="{ path: '/vue/notice'}" @click.native="toggleMenu">
-            공지사항
-          </router-link>
-        </li>
-        <!-- 어드민 -->
-        <li v-if="isAdmin" class="admin">
-          <a href="/backoffice/main">Admin</a>
-        </li>
-        <li class="password">
-          <a href="/user/change/my-password">PW변경</a>
-        </li>
-        <li class="logout">
-          <a href="/logout">로그아웃</a>
+          <a v-else :href="menu.resourceUrl">{{ menu.name }}</a>
         </li>
       </ul>
     </nav>
@@ -65,6 +41,7 @@ import {
   defineComponent, reactive, toRefs, computed, watch,
 } from '@vue/composition-api';
 import { getInstance } from '@/composable';
+import { MENU_INFO } from './constants';
 
 export default defineComponent({
   name: 'GNB',
@@ -74,6 +51,8 @@ export default defineComponent({
     const { instance } = getInstance();
     const state = reactive({
       userInfo: computed(() => instance.$store.state.global.userInfo),
+      menuListOrigin: computed(() => instance.$store.state.global.menuListOrigin),
+      menuList: computed(() => instance.$store.state.global.menuList),
       isAdmin: false,
       menuVisible: false,
     });
@@ -84,15 +63,36 @@ export default defineComponent({
 
     const checkMenuVisible = (): boolean => state.menuVisible;
 
+    const setMenuList = () => {
+      if (state.menuListOrigin.length === 0) return;
+      const menuList = Object.keys(MENU_INFO).map((key) => {
+        let menu = MENU_INFO[key];
+        [...state.menuListOrigin].filter((m) => m.status === 'ACTIVE').forEach((v) => {
+          if (v.name !== menu.name) return;
+          if (menu.name === 'Admin' && !state.isAdmin) return;
+          menu = { ...menu, ...v };
+        });
+        return menu;
+      });
+      instance.$store.commit('global/setMenuList', menuList);
+    };
+
     watch(() => state.userInfo, (value) => {
       if (!value) return;
       for (let i = 0; i < value.roleList.length; i++) {
         const val = value.roleList[i];
         if (val.name === 'ADMIN') {
           state.isAdmin = true;
+          setMenuList();
         }
       }
     });
+
+    watch(() => state.menuListOrigin, (value) => {
+      if (value.length === 0) return;
+      setMenuList();
+    });
+
     return {
       ...toRefs(state),
       toggleMenu,
@@ -121,7 +121,7 @@ export default defineComponent({
   margin: 0 auto;
   padding: 0 1.5rem;
 }
-.header .gnb {
+.side-menu {
   position: fixed;
   top: var(--gnb-height);
   bottom: 0;
@@ -131,54 +131,27 @@ export default defineComponent({
   background-color: var(--white);
   border-right: 1px solid #b4b4b4;
 }
-.gnb > ul {
+.side-menu > ul {
   display: flex;
   flex-direction: column;
 }
-.gnb li a {
+.side-menu li a {
   display: block;
-  padding: 15px 45px;
+  padding: 15px 45px 13px;
   text-align: left;
-  background-repeat: no-repeat;
-  background-position: 22px;
+  font-size: 14px;
+  background: url(~@/assets/icons/ic_menu_02.png) no-repeat 22px;
   border-bottom: 1px solid #e9e9e9;
 }
-.gnb li a:hover {
+.side-menu li a:hover {
   font-weight: 700;
 }
-.gnb li.home a {
-  background-image: url(~@/assets/icons/ic_home.svg);
-  background-position: 20px;
-  background-size: 16px;
-}
-.gnb li.event a {
-  background-image: url(~@/assets/icons/ic_notifications.svg);
-  background-position: 20px;
-  background-size: 17px 16px;
-}
-.gnb li.monitoring a {
-  background-image: url(~@/assets/icons/ic_monitor.svg);
-  background-position: 21px;
-  background-size: 15px 16px;
-}
-.gnb li.notice a {
-  background-image: url(~@/assets/icons/ic_volume.svg);
-  background-position: 23px;
-  background-size: 13px 14px;
-}
-.gnb li.admin a {
-  background-image: url(~@/assets/icons/ic_settings.svg);
-  background-size: 16px;
-}
-.gnb li.password a {
-  background-image: url(~@/assets/icons/ic_edit.svg);
-  background-position: 21px;
-  background-size: 15px;
-}
-.gnb li.logout a {
-  background-image: url(~@/assets/icons/ic_logout.svg);
-  background-size: 15px;
-}
+.side-menu .menu-01 {background-image: url(~@/assets/icons/ic_menu_01.png);}
+.side-menu .menu-02 {background-image: url(~@/assets/icons/ic_menu_02.png);}
+.side-menu .menu-03 {background-image: url(~@/assets/icons/ic_menu_03.png);}
+.side-menu .menu-04 {background-image: url(~@/assets/icons/ic_menu_04.png);}
+.side-menu .menu-05 {background-image: url(~@/assets/icons/ic_menu_05.png);}
+.side-menu .menu-06 {background-image: url(~@/assets/icons/ic_menu_06.png);}
 
 .logo {
   display: flex;

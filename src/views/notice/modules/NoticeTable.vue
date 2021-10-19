@@ -22,9 +22,9 @@
             <tr v-for="(notice, idx) in noticeBoardList" :key="idx">
               <td>{{ getId(idx) }}</td>
               <td class="tit">
-                <a :href="`/backoffice/board/400/post?postId=${notice.id}`">
+                <router-link :to="{ name: 'NoticeDetail', params: { postId: notice.id }}">
                   {{ notice.title }}
-                </a>
+                </router-link>
               </td>
               <td>{{ $moment(notice.regDate).format('YYYY-MM-DD') }}</td>
               <td>{{ notice.user.name }}</td>
@@ -73,8 +73,9 @@ export default {
     };
 
     const getId = (idx) => {
-      const prev = state.searchParam.size * (state.searchParam.page - 1);
-      const top = state.totalElements - prev;
+      const [page, size, total] = [state.searchParam.page, state.searchParam.size, state.totalElements];
+      const prev = size * (page - 1);
+      const top = total - prev;
       return top - idx;
     };
 
@@ -86,3 +87,10 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.tbl thead th,
+.tbl tbody td {
+  font-size: 14px;
+}
+</style>

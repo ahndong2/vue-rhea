@@ -1,5 +1,5 @@
 <template>
-  <modal :id="id" :visible="proxyVisible" @closeModal="closeModal">
+  <modal :id="id" :visible="proxyVisible" size="sm" @closeModal="closeModal">
     <template #header>
       <h3>Event 예외 처리</h3>
     </template>

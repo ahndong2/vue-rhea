@@ -1,6 +1,5 @@
 <template>
   <table-container type="data" :height="eventListData.length < 10 ? '' : '567px'">
-    <caption>발생/해제 Event</caption>
     <thead>
       <tr>
         <th v-if="checkBox" scope="col" />
@@ -38,16 +37,16 @@
     </thead>
     <tbody>
       <tr v-if="eventListData.length === 0">
-        <td colspan="10" class="empty">
+        <td colspan="20" class="empty">
           Event가 없습니다.
         </td>
       </tr>
       <tr v-for="(data,idx) in eventListData" :key="idx">
-        <td v-if="checkBox" class="has-chk">
-          <input :id="data.id" type="radio" name="radio" :checked="data.id === pickedID"
+        <td v-if="checkBox" class="chk-item">
+          <input :id="data.id" type="radio" name="radio" class="inp" :checked="data.id === pickedID"
                  @change="selectCheckbox(data)"
           >
-          <label :for="data.id" class="chk-item" />
+          <label :for="data.id" class="ico" />
         </td>
         <td class="org">
           <span class="text" :title="data.orgNm">{{ data.orgNm }}</span>
@@ -73,7 +72,10 @@
           <span>{{ data.errorType }}</span>
         </td>
         <td>
-          <span>{{ data.alertLevel | changeAlertStr }}</span>
+          <span :class="`status${data.alertLevel}`" class="status">
+            <span class="circle" />
+            <span class="text">{{ data.alertLevel | changeAlertStr }}</span>
+          </span>
         </td>
         <td>
           <span :title="data.errorDescription">{{ data.errorDescription }}</span>
@@ -115,7 +117,7 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
-    statusType: {
+    statusType: { // 0 발생 , 1 해제
       type: Number,
       default: 0,
     },
@@ -155,7 +157,25 @@ export default defineComponent({
 </script>
 
 <style scoped>
-td.org .text {max-width: 100px;}
-td.prom .text {max-width: 100px;}
-td.group .text {max-width: 100px;}
+td.org .text,
+td.prom .text,
+td.group .text {max-width: 80px;}
+
+.status {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.status .circle {
+  position: relative;
+  top: -1px;
+  width: 6px;
+  height: 6px;
+  margin-right: 5px;
+  border-radius: 50%;
+}
+.status1 .circle {background-color: #fece00;}
+.status2 .circle {background-color: #ff9b51;}
+.status3 .circle {background-color: #ff5555;}
 </style>

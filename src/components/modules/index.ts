@@ -12,3 +12,4 @@ export * from './table';
 export * from './datepicker';
 export * from './indicator';
 export * from './spinner';
+export * from './editor';

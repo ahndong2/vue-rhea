@@ -66,11 +66,12 @@ export default {
 }
 .tbl thead th {
   height: 50px;
-  white-space: nowrap;
+  padding: 0 10px;
   font-weight: 400;
-  font-size: 14px;
-  line-height: 17px;
+  font-size: 13px;
+  line-height: 15px;
   letter-spacing: 0.5px;
+  white-space: nowrap;
   text-transform: capitalize;
   background-color: #eee;
   border-width: 1px 0 0;
@@ -78,8 +79,7 @@ export default {
 }
 .tbl tbody th,
 .tbl tbody td {
-  font-size: .9rem;
-  letter-spacing: 0.5px;
+  font-size: 13px;
   white-space: nowrap;
   background-color: #fff;
   border-width: 0 0 1px;
@@ -91,15 +91,12 @@ export default {
   overflow-x: hidden;
   /* min-width: 7rem; */
   height: 50px;
-  padding: 8px 12px;
+  padding: 10px;
 }
 .tbl tbody .empty {
-  height: 60px;
   text-align: center !important;
-  font-size: 15px;
+  font-size: 14px;
   color: #999;
-  letter-spacing: 1px;
-  border: 0;
 }
 
 .tbl tbody td .text,
@@ -111,7 +108,7 @@ export default {
 }
 .tbl tbody td a:hover {
   color: var(--KB-gold);
-  /* text-decoration: underline; */
+  text-decoration: underline;
 }
 .tbl tbody td svg {
   width: 16px;
@@ -120,7 +117,6 @@ export default {
   fill: currentColor;
 }
 .btn-detail {
-  letter-spacing: 0;
   color: var(--KB-gray);
 }
 .btn-detail:hover {
@@ -128,25 +124,59 @@ export default {
 }
 
 /* basic type */
-.tbl.basic thead th {
-  padding-right: 10px;
-  padding-left: 10px;
-}
-.tbl.basic tbody th {
-  text-align: left;
-  padding: 8px 0px 8px 20px;
-  text-transform: capitalize;
-}
+.tbl.basic thead th,
 .tbl.basic tbody td {
   text-align: center;
 }
+.tbl.basic tbody th {
+  text-align: left;
+  padding: 10px;
+  padding-left: 20px;
+  text-transform: capitalize;
+}
 
 /* data type */
-.tbl.data thead th {
-  padding-left: 10px;
-  text-align: left;
-}
+.tbl.data thead th,
 .tbl.data tbody td {
   text-align: left;
+}
+</style>
+
+<style scoped>
+.chk-item {
+  position: relative;
+  /* width: 50px; */
+}
+.chk-item .inp {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  clip: rect(0, 0, 0, 0);
+}
+.chk-item .ico {
+  position: relative;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+  background-color: #eaeaea;
+  border-radius: 50%;
+}
+.chk-item .inp:checked + .ico {
+  background-color: var(--KB-positive);
+}
+.chk-item .ico::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  margin: auto;
+  background-color: #fff;
+  border-radius: 50%;
+  content: ' ';
 }
 </style>

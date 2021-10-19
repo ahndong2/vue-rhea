@@ -39,7 +39,7 @@
                         :value="viewOptions.day" :options="selectOptionsDays" @change="changeSelectAlert"
             />
             <span class="text ml-2">간 누적 미해제</span>
-            <em class="period pr-1">
+            <em v-if="beforeDays" class="period pr-1">
               {{ beforeDays }} ~
             </em>
           </div>
@@ -106,7 +106,7 @@
 
     <section id="notice" class="notice col-span-12 lg:col-span-4">
       <h3 class="section-title">
-        <router-link :to="{ path: '/vue/notice'}" replace>
+        <router-link :to="{ name: 'NoticeList'}" replace>
           공지사항
           <icon name="arr_r" size="30" />
         </router-link>
@@ -119,12 +119,12 @@
           </li>
           <!-- 당일 포함 7일간 게시물 : 최대 5개 -->
           <li v-for="(notice, idx) in noticeBoardList" v-else :key="idx" class="notice-item">
-            <a :href="`/backoffice/board/400/post?postId=${notice.id}`"
-               class="notice-link"
+            <router-link :to="{ name: 'NoticeDetail', params: { postId: notice.id }}"
+                         class="notice-link"
             >
               <strong class="tit ellipsis">{{ notice.title }}</strong>
               <span class="date">{{ $moment(notice.regDate).format('YYYY-MM-DD') }}</span>
-            </a>
+            </router-link>
           </li>
         </ul>
       </div>
@@ -263,7 +263,7 @@ export default {
 }
 .dashboard .section-title {
   padding: 3rem 0 1rem;
-  font-size: 2.5rem;
+  font-size: 40px;
 }
 .dashboard .section-title > a {
   display: inline-flex;
@@ -298,27 +298,27 @@ export default {
   flex-wrap: wrap;
   padding: 1rem 0;
   line-height: 40px;
-  font-size: 1.3rem;
+  font-size: 21px;
 }
 .alert-status .panel-title .text {
-  letter-spacing: 1.5px;
+  letter-spacing: 1px;
   white-space: nowrap;
 }
 .alert-status .panel-title .slt {
-  min-width: 90px;
+  min-width: 80px;
   height: 40px;
+  padding-right: 20px;
   font-weight: 700;
-  font-size: .95em;
-  letter-spacing: 1.5px;
+  font-size: 19px;
+  letter-spacing: 1px;
   background-position: right center;
   border-bottom: 3px solid;
 }
 .alert-status .panel-title .period {
   margin-left: auto;
   font-family: 'KBFGTextL';
-  font-size: 1rem;
+  font-size: 15px;
   color: var(--KB-silver);
-  letter-spacing: .5px;
 }
 .alert-status .panel-content {
   height: 180px;
@@ -366,7 +366,7 @@ export default {
   flex: 0 0 100px;
   text-align: right;
   font-family: 'KBFGTextL';
-  font-size: .96rem;
+  font-size: 15px;
   color: #999;
   white-space: nowrap;
 }

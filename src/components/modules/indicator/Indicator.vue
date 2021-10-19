@@ -72,7 +72,6 @@ export default {
   min-width: 100px;
   padding: 10px 15px;
   font-size: 15px;
-  letter-spacing: 0.5px;
   color: #333;
   text-align: left;
   white-space: nowrap;

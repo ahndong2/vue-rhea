@@ -26,6 +26,6 @@ export const setEventIgnoreWriteAPI = (data): Promise<AxiosResponse> => API.requ
 
 export const setEventIgnoreCanclewriteAPI = (data): Promise<AxiosResponse> => API.request({
   method: 'POST',
-  url: 'monitoring/eventignore/canclewrite',
+  url: 'monitoring/eventignore/cancelwrite',
   data,
 });

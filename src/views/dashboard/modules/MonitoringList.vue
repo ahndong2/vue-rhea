@@ -147,9 +147,6 @@ export default {
   display: flex;
   height: 60px;
 }
-.accordion-item.depth-1 > .accordion-header {
-  font-size: 17px;
-}
 .accordion-item.depth-1.active > .accordion-header {
   background-color: var(--KB-gray);
   color: #fff;

@@ -4,7 +4,9 @@
                  @search="searchAlertData"
                  @openModal="openModal"
     />
-
+    <div v-if="ignore.totalCount > 1" class="tbl-top">
+      {{ getResultCount() }}
+    </div>
     <table-container type="data" :height="eventIgnoreData.length < 10 ? '' : '567px'">
       <caption>예외 Event</caption>
       <thead>
@@ -33,11 +35,11 @@
       </thead>
       <tbody>
         <tr v-for="(data,idx) in eventIgnoreData" :key="idx">
-          <td class="has-chk">
-            <input :id="data.id" type="radio" name="radio" :checked="data.id === selectId"
+          <td class="chk-item">
+            <input :id="data.id" type="radio" name="radio" class="inp" :checked="data.id === selectId"
                    @change="selectEventList(data.id)"
             >
-            <label :for="data.id" class="chk-item" />
+            <label :for="data.id" class="ico" />
           </td>
           <td>
             <button class="btn-detail" @click="openModal(data.id)">
@@ -153,6 +155,16 @@ export default defineComponent({
       instance.$store.dispatch('event/setEventIgnoreCanclewrite', data);
     };
 
+    const getResultCount = () => {
+      const obj = state.ignore;
+      const [page, size, total] = [obj.page, obj.size, obj.totalCount];
+      const from = size * (page - 1) + 1;
+      const to = size * page > total ? total : size * page;
+      const pages = Math.ceil(total / size);
+      const res = `검색결과 ${from.toLocaleString()} ~ ${to.toLocaleString()} (${page} page) | 총 ${total.toLocaleString()} 건 (${pages} page)`;
+      return res;
+    };
+
     onMounted(async () => {
       instance.$store.dispatch('event/getEventIgnoreData');
     });
@@ -164,11 +176,8 @@ export default defineComponent({
       selectEventList,
       updateEventExc,
       searchPage,
+      getResultCount,
     };
   },
 });
 </script>
-
-<style scoped>
-
-</style>

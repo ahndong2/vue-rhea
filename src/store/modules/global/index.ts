@@ -4,6 +4,8 @@ import * as mutations from './mutations';
 
 const state: GlobalState = {
   userInfo: {},
+  menuListOrigin: [],
+  menuList: [],
   spinner: false,
 };
 

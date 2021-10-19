@@ -25,6 +25,12 @@
           조회
         </button>
       </div>
+      <div v-if="type==='EventUnresolved'" class="tool">
+        <div class="chk-item">
+          <input id="unread" type="checkbox" name="unread" class="inp">
+          <label for="unread" class="label">미확인만 보기</label>
+        </div>
+      </div>
     </div>
     <div class="right-part">
       <div class="tool">
@@ -107,5 +113,43 @@ export default defineComponent({
 </script>
 
 <style scoped>
-
+.chk-item {
+  position: relative;
+}
+.chk-item .inp {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  clip: rect(0, 0, 0, 0);
+}
+.chk-item .label {
+  position: relative;
+  padding-left: 30px;
+  font-size: 14px;
+}
+.chk-item .label::before,
+.chk-item .label::after {
+  content: ' ';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+}
+.chk-item .label::before {
+  width: 24px;
+  height: 24px;
+  background-color: #ddd;
+  border-radius: 12px;
+}
+.chk-item .inp:checked + .label::before {
+  background-color: var(--KB-positive);
+}
+.chk-item .inp:checked + .label::after {
+  left: 5px;
+  width: 16px;
+  height: 13px;
+  background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'><g fill='none' fill-rule='evenodd'><path d='M0 0h20v20H0z'/><path fill='%23ffffff' d='M1 10.243L7.321 17 19 4.763 17.156 3 7.321 13.346l-4.477-4.76z'/></g></svg>");
+  background-repeat: no-repeat;
+}
 </style>

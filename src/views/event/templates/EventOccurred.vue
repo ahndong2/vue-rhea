@@ -1,13 +1,16 @@
 <template>
   <div>
     <event-refresh type="Occurred" />
-    <alert-status-table class="mb-16" :alert-status-data="occurredAlertStatusData" />
+    <alert-status-table class="mb-16" :alert-status-data="occurredAlertStatusData" :status-type="0" />
 
     <search-form type="EventOccurred"
                  @search="searchAlertData"
                  @openModal="openModal"
     />
-    <event-list-table :check-box="true" :event-list-data="eventListData" @select="selectEventList" />
+    <div v-if="occurred.totalCount > 1" class="tbl-top">
+      {{ getResultCount() }}
+    </div>
+    <event-list-table :check-box="true" :status-type="0" :event-list-data="eventListData" @select="selectEventList" />
     <pagination :current-page="occurred.page" :total-items="occurred.totalCount"
                 :items-per-page="occurred.size" :max-size="5" @change="searchPage"
     />
@@ -76,6 +79,16 @@ export default defineComponent({
       instance.$store.dispatch('event/setEventIgnoreWrite', data);
     };
 
+    const getResultCount = () => {
+      const obj = state.occurred;
+      const [page, size, total] = [obj.page, obj.size, obj.totalCount];
+      const from = size * (page - 1) + 1;
+      const to = size * page > total ? total : size * page;
+      const pages = Math.ceil(total / size);
+      const res = `검색결과 ${from.toLocaleString()} ~ ${to.toLocaleString()} (${page} page) | 총 ${total.toLocaleString()} 건 (${pages} page)`;
+      return res;
+    };
+
     return {
       ...toRefs(state),
       searchAlertData,
@@ -83,11 +96,8 @@ export default defineComponent({
       selectEventList,
       createEventExc,
       searchPage,
+      getResultCount,
     };
   },
 });
 </script>
-
-<style scoped>
-
-</style>

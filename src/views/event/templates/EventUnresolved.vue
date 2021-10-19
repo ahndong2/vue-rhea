@@ -4,6 +4,9 @@
     <alert-status-table class="mb-16" :alert-status-data="unresolvedAlertStatusData" :status-type="1" />
 
     <search-form type="EventUnresolved" @search="searchAlertData" />
+    <div v-if="unresolved.totalCount > 1" class="tbl-top">
+      {{ getResultCount() }}
+    </div>
     <event-list-table :check-box="true" :status-type="1" :event-list-data="eventListData" />
     <pagination :current-page="unresolved.page" :total-items="unresolved.totalCount"
                 :items-per-page="unresolved.size" :max-size="5" @change="searchPage"
@@ -51,15 +54,22 @@ export default defineComponent({
       searchAlertData(data);
     };
 
+    const getResultCount = () => {
+      const obj = state.unresolved;
+      const [page, size, total] = [obj.page, obj.size, obj.totalCount];
+      const from = size * (page - 1) + 1;
+      const to = size * page > total ? total : size * page;
+      const pages = Math.ceil(total / size);
+      const res = `검색결과 ${from.toLocaleString()} ~ ${to.toLocaleString()} (${page} page) | 총 ${total.toLocaleString()} 건 (${pages} page)`;
+      return res;
+    };
+
     return {
       ...toRefs(state),
       searchAlertData,
       searchPage,
+      getResultCount,
     };
   },
 });
 </script>
-
-<style scoped>
-
-</style>

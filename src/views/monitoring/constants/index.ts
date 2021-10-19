@@ -19,6 +19,22 @@ const SELECT_OPTIONS = {
     { label: '최근 12시간', value: 12 },
     { label: '최근 24시간', value: 24 },
   ],
+  ALERT_LEVEL: [
+    { label: '주의', value: 1 },
+    { label: '경고', value: 2 },
+    { label: '심각', value: 3 },
+    // { label: '해제', value: 4 },
+    // { label: '미해제', value: 0 },
+  ],
+  TYPE: [
+    { label: 'CPU', value: 'CPU' },
+    { label: 'Memory', value: 'Memory' },
+    { label: 'Storage', value: 'Storage' },
+    { label: 'NetworkReception', value: 'NetworkReception' },
+    { label: 'Node', value: 'Node' },
+    { label: 'Pod', value: 'Pod' },
+    { label: 'PodError', value: 'PodError' },
+  ],
 };
 
 const CHART_COLORS = [

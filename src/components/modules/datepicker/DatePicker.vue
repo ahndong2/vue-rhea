@@ -56,6 +56,7 @@ export default {
 <style scoped>
 .date-picker .inp-t {
   min-width: inherit;
-  width: 170px;
+  max-width: inherit;
+  width: 150px;
 }
 </style>

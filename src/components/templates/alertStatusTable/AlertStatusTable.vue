@@ -1,21 +1,21 @@
 <template>
   <section id="alertStatus" class="alert-status">
     <h3 class="section-title">
-      {{ statusType === 0 ? 'Alert 현황' : 'Alert 해제 현황' }}
+      {{ statusType === 1 ? 'Alert 해제 현황' : 'Alert 현황' }}
     </h3>
     <div class="section-content">
-      <table-container type="basic" :height="alertStatusData.length < 10 ? '' : '567px'">
+      <table-container type="basic" :height="alertStatusData.length < 5 ? '' : '300px'">
         <caption>Alert 현황</caption>
         <colgroup>
           <col style="width: auto;">
           <col style="width: auto;">
-          <col style="width: 9%;">
-          <col style="width: 9%;">
-          <col style="width: 9%;">
-          <col style="width: 9%;">
-          <col style="width: 9%;">
-          <col style="width: 9%;">
-          <col style="width: 9%;">
+          <col style="width: 10%;">
+          <col style="width: 10%;">
+          <col style="width: 10%;">
+          <col style="width: 10%;">
+          <col style="width: 10%;">
+          <col style="width: 10%;">
+          <col style="width: 10%;">
         </colgroup>
         <thead>
           <tr>
@@ -55,23 +55,23 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(data,idx) in alertStatusData" :key="idx">
+          <tr v-for="(data,idx) in alertStatusData" :key="idx" :class="statusType === 2 ? 'monitoring': ''">
             <th scope="row">
               {{ data.prometheusName }}
             </th>
             <th scope="row">
               {{ data.groupName }}
             </th>
-            <td>
+            <td @click="callbackFunc('CPU')">
               {{ checkNull(data.resourceList.CPU) }}
             </td>
-            <td>
+            <td @click="callbackFunc('Memory')">
               {{ checkNull(data.resourceList.Memory) }}
             </td>
-            <td>
+            <td @click="callbackFunc('Storage')">
               {{ checkNull(data.resourceList.Storage) }}
             </td>
-            <td>
+            <td @click="callbackFunc('NetworkReception')">
               {{ checkNull(data.resourceList.NetworkReception) }}
             </td>
             <!-- <td>
@@ -80,13 +80,13 @@
             <td>
               {{ checkNull(data.resourceList.SystemLoad) }}
             </td> -->
-            <td>
+            <td @click="callbackFunc('Node')">
               {{ checkNull(data.resourceList.Node) }}
             </td>
-            <td>
+            <td @click="callbackFunc('Pod')">
               {{ checkNull(data.resourceList.Pod) }}
             </td>
-            <td>
+            <td @click="callbackFunc('PodError')">
               {{ checkNull(data.resourceList.PodError) }}
             </td>
           </tr>
@@ -117,23 +117,31 @@ export default defineComponent({
       type: Array,
       default: () => [],
     },
-    statusType: { // 0 발생 , 1 해제
+    statusType: { // 0 발생 , 1 해제 , 2 모니터링
       type: Number,
       default: 0,
     },
   },
-  setup() {
+  setup(props, { emit }) {
     const state = reactive({
     });
+
+    const callbackFunc = (type) => {
+      emit('callback', type);
+    };
 
     const checkNull = (data) => (data || 0);
     return {
       ...toRefs(state),
       checkNull,
+      callbackFunc,
     };
   },
 });
 </script>
 
 <style scoped>
+.monitoring td {
+  cursor: pointer;
+}
 </style>

@@ -55,6 +55,7 @@ export default defineComponent({
         window.location.href = '/loginPage';
       }
       instance.$store.dispatch('global/getAuthInfo');
+      instance.$store.dispatch('global/getMenuList');
     });
     return {
       ...toRefs(state),

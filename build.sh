@@ -1,6 +1,8 @@
 #bash build.sh
 #!/bin/sh
 printf '===========================\n'
+printf ${GIT_BRANCH}'\n'
+printf '===========================\n'
 printf 'Rhea-front Build Start\n'
 printf '===========================\n'
 npm install
@@ -15,7 +17,7 @@ printf 'Rhea-front Copy /dist(rhea_dist) -> rheapjt-rheaspringboot push Start\n'
 printf '(static/src/main/resources/static/vue)\n'
 printf '===========================\n'
 
-# dist gitignore 회피 및 static/view 폴더로 들어가기 위해 dist 를 view 로 copy
+# dist gitignore 회피 및 static/vue 폴더로 들어가기 위해 dist 를 vue 로 copy
 mv dist vue
 
 # rheapjt-rheaspringboot clone
