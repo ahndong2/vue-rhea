@@ -24,6 +24,7 @@ module.exports = {
     radix: ["error", "as-needed"],
     "no-prototype-builtins": "error",
     "no-empty": ["error", { allowEmptyCatch: true }],
+    "no-v-html": "off",
     "import/extensions": [
       "error",
       "always",

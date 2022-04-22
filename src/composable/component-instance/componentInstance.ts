@@ -1,9 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   ComponentInstance, getCurrentInstance, reactive,
 } from '@vue/composition-api';
+import moment from 'moment';
 
 export interface ComponentInstanceExtension extends ComponentInstance {
-  $moment: any;
+  $moment: typeof moment;
+  $refs: any;
 }
 
 export const getInstance = () => {

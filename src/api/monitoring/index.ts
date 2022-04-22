@@ -28,7 +28,12 @@ export const getGroupJobsListAPI = (param): Promise<AxiosResponse> => API.reques
 
 export const getMonitoringDetailAPI = (param): Promise<AxiosResponse> => API.request({
   method: 'GET',
-  // url: 'monitoring/monitoringDetail',
   url: 'monitoring/monitoringDetailDivide',
+  params: param,
+});
+
+export const getEventList = (param): Promise<AxiosResponse> => API.request({
+  method: 'GET',
+  url: 'monitoring/eventlog/page',
   params: param,
 });

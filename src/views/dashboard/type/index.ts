@@ -21,6 +21,7 @@ interface Prometheus {
   active?: boolean,
 }
 interface MonitoringListType {
+  id?: number,
   name?: string,
   grafanaLink?: string,
   rheaLink?: string,

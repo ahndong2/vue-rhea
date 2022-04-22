@@ -2,87 +2,94 @@
   <div>
     <search-form type="EventIgnore"
                  @search="searchAlertData"
-                 @openModal="openModal"
+                 @openModal="openExcModal"
     />
-    <div v-if="ignore.totalCount > 1" class="tbl-top">
-      {{ getResultCount() }}
-    </div>
-    <table-container type="data" :height="eventIgnoreData.length < 10 ? '' : '567px'">
-      <caption>예외 Event</caption>
+    <search-result :page="ignore.page" :size="ignore.size" :total="ignore.totalCount" class="mb-3" />
+    <table-container type="data" :height="eventIgnoreData.length > 10 ? '500px' : ''">
+      <caption>예외 이벤트 로그</caption>
       <thead>
         <tr>
           <th scope="col" />
-          <th scope="col" />
-          <th scope="col">
-            <span>Prometheus</span>
+          <th scope="col" class="text-center">
+            상세
           </th>
           <th scope="col">
-            <span>Group&amp;Job</span>
+            Data Source 명
           </th>
           <th scope="col">
-            <span>발생 자원</span>
+            Project 분류
           </th>
           <th scope="col">
-            <span>Event type</span>
+            Event type
           </th>
           <th scope="col">
-            <span>등록자</span>
+            등록자
           </th>
           <th scope="col">
-            <span>등록일시</span>
+            등록 일시
+          </th>
+          <th scope="col" class="text-center">
+            사유
           </th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="(data,idx) in eventIgnoreData" :key="idx">
           <td class="chk-item">
-            <input :id="data.id" type="radio" name="radio" class="inp" :checked="data.id === selectId"
-                   @change="selectEventList(data.id)"
+            <input :id="data.key" type="radio" name="radio" class="inp" :checked="data.key === selectedId"
+                   @change="selectEventList(data.key)"
             >
-            <label :for="data.id" class="ico" />
+            <label :for="data.key" class="ico" />
           </td>
-          <td>
-            <button class="btn-detail" @click="openModal(data.id)">
-              조회
-              <svg xmlns="http://www.w3.org/2000/svg" width="18px" height="18px" viewBox="0 0 24 24">
-                <path d="M0 0h24v24H0z" fill="none" />
-                <path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z" />
-              </svg>
+          <td class="text-center">
+            <button class="btn detail" @click="openModalDetail(data)">
+              <i class="fi fi-rr-zoom-in" />
+              <span class="text">상세</span>
             </button>
           </td>
           <td>
-            <span><router-link :to="{ name: 'Monitoring', query: {org: data.organizaionId, prom: data.prometheusId}}" class="link">{{ data.prometheusNm }}</router-link></span>
+            <span v-if="data.organizationId === 100" :title="data.prometheusNm">{{ data.prometheusNm }}</span>
+            <router-link v-else
+                         :to="{ name: 'Monitoring', params: {org: data.organizationId, prom: data.prometheusId}}"
+                         :title="data.prometheusNm"
+            >
+              {{ data.prometheusNm }}
+            </router-link>
           </td>
           <td>
-            <span>{{ data.groupInfoNm }}</span>
+            <span :title="data.groupInfoNm">{{ data.groupInfoNm }}</span>
           </td>
           <td>
-            <span>{{ data.resourceType }}({{ data.resourceVal }})</span>
+            <span>{{ data.thresholdResourceType }}</span>
           </td>
           <td>
-            <span>{{ data.errorType }}</span>
-          </td>
-          <td>
-            <span>{{ data.modifier }}</span>
+            <span>{{ data.creator }}</span>
           </td>
           <td>
             <span>{{ data.registDate }}</span>
           </td>
+          <td class="text-center">
+            <button class="btn cause" @click="openExcModal(data.key)">
+              <i class="fi fi-rr-document" />
+              <span class="text">조회</span>
+            </button>
+          </td>
         </tr>
         <tr v-if="eventIgnoreData.length === 0">
-          <td colspan="8" class="empty">
-            Event가 없습니다.
+          <td colspan="20" class="empty">
+            Data가 없습니다.
           </td>
         </tr>
       </tbody>
     </table-container>
     <pagination :current-page="ignore.page" :total-items="ignore.totalCount"
-                :items-per-page="ignore.size" :max-size="5" @change="searchPage"
+                :items-per-page="ignore.size" :max-size="5" class="mt-10" @change="searchPage"
     />
 
     <event-modal-exc-update id="exceptionUpdate" ref="exceptionUpdate"
                             @updateEventExc="updateEventExc"
     />
+    <event-modal-detail id="eventModalDetail" ref="eventModalDetail" :status-type="2" />
   </div>
 </template>
 
@@ -91,37 +98,42 @@ import {
   defineComponent, reactive, toRefs, onMounted, computed,
 } from '@vue/composition-api';
 import { getInstance } from '@/composable';
-import { TableContainer, Pagination } from '@/components';
+import { apiSchedule } from '@/utils';
+import { SearchResult, TableContainer, Pagination } from '@/components';
 import {
-  SearchForm, EventListTable, EventModalExcUpdate,
+  SearchForm, EventListTable, EventModalExcUpdate, EventModalDetail,
 } from '@/views/event/modules';
 
 export default defineComponent({
   name: 'EventIgnore',
   components: {
     SearchForm,
+    SearchResult,
     EventListTable,
     TableContainer,
     EventModalExcUpdate,
+    EventModalDetail,
     Pagination,
   },
   setup() {
     const { instance } = getInstance();
-    const ref = instance.$refs as any;
+    const ref = instance.$refs;
 
     const state = reactive({
       ignore: computed(() => instance.$store.state.event.ignore),
       alertStatusData: [],
       eventIgnoreData: computed(() => instance.$store.state.event.eventIgnoreList),
-      selectId: '',
+      selectedId: '',
     });
 
-    const searchAlertData = (searchData) => {
+    // 이벤트 로그 검색
+    const searchAlertData = (searchData):void => {
+      state.selectedId = '';
       instance.$store.commit('event/setIgnore', searchData);
       instance.$store.dispatch('event/getEventIgnoreData');
     };
 
-    const searchPage = (page) => {
+    const searchPage = (page):void => {
       const data = {
         ...state.ignore,
         page,
@@ -129,54 +141,49 @@ export default defineComponent({
       searchAlertData(data);
     };
 
-    const openModal = (id) => {
+    const openExcModal = (id):void => {
       if (id) {
-        state.selectId = id;
+        state.selectedId = id;
       }
-
-      if (state.selectId) {
-        const data = state.eventIgnoreData.find((v) => v.id === state.selectId);
+      if (state.selectedId) {
+        const data = state.eventIgnoreData.find((v) => v.key === state.selectedId);
         const param = {
           groupId: data.groupId,
           thresholdResourceType: data.thresholdResourceType,
         };
         instance.$store.dispatch('event/getEventIgnoreReasonData', param);
+
         ref.exceptionUpdate.openModal(data);
       } else {
-        window.alert('Event를 선택해 주세요.');
+        window.alert('선택한 값이 없습니다.');
       }
     };
 
-    const selectEventList = (id) => {
-      state.selectId = id;
+    const selectEventList = (id):void => {
+      state.selectedId = id;
     };
 
-    const updateEventExc = (data) => {
+    const updateEventExc = (data):void => {
       instance.$store.dispatch('event/setEventIgnoreCanclewrite', data);
     };
 
-    const getResultCount = () => {
-      const obj = state.ignore;
-      const [page, size, total] = [obj.page, obj.size, obj.totalCount];
-      const from = size * (page - 1) + 1;
-      const to = size * page > total ? total : size * page;
-      const pages = Math.ceil(total / size);
-      const res = `검색결과 ${from.toLocaleString()} ~ ${to.toLocaleString()} (${page} page) | 총 ${total.toLocaleString()} 건 (${pages} page)`;
-      return res;
+    const openModalDetail = (data):void => {
+      ref.eventModalDetail.openModal(data);
     };
 
-    onMounted(async () => {
+    onMounted(async ():Promise<void> => {
       instance.$store.dispatch('event/getEventIgnoreData');
+      apiSchedule({ name: 'EventIgnore', params: { tabKey: '' } });
     });
 
     return {
       ...toRefs(state),
       searchAlertData,
-      openModal,
+      openExcModal,
       selectEventList,
       updateEventExc,
       searchPage,
-      getResultCount,
+      openModalDetail,
     };
   },
 });

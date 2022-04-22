@@ -1,8 +1,5 @@
 const SELECT_OPTIONS = {
   REFRESH_TIME: [
-    // { label: '5초', value: 5 },
-    // { label: '10초', value: 10 },
-    // { label: '30초', value: 30 },
     { label: '1분', value: 60 },
     { label: '5분', value: 300 },
     { label: '15분', value: 900 },
@@ -24,19 +21,18 @@ const SELECT_OPTIONS = {
     { label: '12시간', value: 12 },
   ],
   DAYS: [
-    { label: '2일', value: 2 },
-    { label: '3일', value: 3 },
-    { label: '5일', value: 5 },
-    { label: '7일', value: 7 },
+    { label: '2일간', value: 2 },
+    { label: '3일간', value: 3 },
+    { label: '5일간', value: 5 },
+    { label: '7일간', value: 7 },
+  ],
+  ALERT_LEVEL: [
+    { label: '해제', value: 0, class: 'resolved' },
+    { label: '주의', value: 1, class: 'caution' },
+    { label: '경고', value: 2, class: 'warning' },
+    { label: '심각', value: 3, class: 'danger' },
+    { label: '미해제', value: 4, class: 'unresolved' },
   ],
 };
 
-const ALERT_LEVEL = {
-  1: '심각',
-  2: '경고',
-  3: '주의',
-  4: '해제',
-  5: '미해제',
-};
-
-export { SELECT_OPTIONS, ALERT_LEVEL };
+export { SELECT_OPTIONS };

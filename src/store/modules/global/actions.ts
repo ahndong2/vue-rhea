@@ -9,6 +9,28 @@ export const getAuthInfo = async ({ commit }: ActionContext<GlobalState, RootSta
   });
 };
 
+export const setAPIRequestCount = ({ commit, state }: ActionContext<GlobalState, RootState>):void => {
+  commit('setAPIRequestCount', state.apiRequestCount as number + 1);
+  commit('setSpinner', true);
+};
+
+export const setAPIResponseCount = ({ commit, state }: ActionContext<GlobalState, RootState>):void => {
+  commit('setAPIResponseCount', state.apiResponseCount as number + 1);
+
+  if (state.apiRequestCount === state.apiResponseCount) {
+    commit('resetAPICountSpinner');
+  }
+};
+
+let errorFlag = false;
+export const errorControll = ():void => {
+  if (!errorFlag) {
+    errorFlag = true;
+    window.alert('로그인 세션 타임이 종료되었습니다. \n로그인 페이지로 이동합니다.');
+    window.location.href = '/';
+  }
+};
+
 export const setSpinner = ({ commit }: ActionContext<GlobalState, RootState>, spinner):void => {
   commit('setSpinner', spinner);
 };

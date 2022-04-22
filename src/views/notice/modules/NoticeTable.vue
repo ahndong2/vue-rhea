@@ -7,7 +7,7 @@
           <colgroup>
             <col style="width: 150px;">
             <col style="width: auto;">
-            <col style="width: 150px;">
+            <col style="width: 200px;">
             <col style="width: 200px;">
           </colgroup>
           <thead>
@@ -22,7 +22,9 @@
             <tr v-for="(notice, idx) in noticeBoardList" :key="idx">
               <td>{{ getId(idx) }}</td>
               <td class="tit">
-                <router-link :to="{ name: 'NoticeDetail', params: { postId: notice.id }}">
+                <router-link :to="{ name: 'NoticeDetail', params: { postId: notice.id }}"
+                             class="block text-left whitespace-normal"
+                >
                   {{ notice.title }}
                 </router-link>
               </td>
@@ -39,8 +41,13 @@
       </div>
     </div>
     <pagination :current-page="searchParam.page" :total-items="totalElements"
-                :items-per-page="searchParam.size" :max-size="5" @change="searchPage"
+                :items-per-page="searchParam.size" :max-size="5" class="mt-10" @change="searchPage"
     />
+    <router-link v-if="isAdmin" :to="{ name: 'NoticeWrite'}"
+                 class="btn-write"
+    >
+      등록
+    </router-link>
   </div>
 </template>
 
@@ -62,6 +69,11 @@ export default {
       noticeBoardList: computed(() => instance.$store.state.board.noticeBoard.content),
       totalElements: computed(() => instance.$store.state.board.noticeBoard.totalElements),
       searchParam: computed(() => instance.$store.state.board.searchParam),
+      isAdmin: computed(() => {
+        const userInfo = instance.$store.state.global.userInfo;
+        if (!userInfo.name) return false;
+        return userInfo.roleList.find((v) => v.name === 'ADMIN') !== undefined;
+      }),
     });
     const searchPage = (v) => {
       const data = {
@@ -89,8 +101,26 @@ export default {
 </script>
 
 <style scoped>
-.tbl thead th,
+.tbl tbody th,
 .tbl tbody td {
   font-size: 14px;
+}
+.tbl.basic tbody td {
+  height: 45px;
+}
+.tbl tbody td:not(.tit) {
+  color: #888;
+}
+.btn-write {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  min-width: 100px;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  border-radius: .25rem;
+  color: #fff;
+  background-color: var(--KB-gray);
 }
 </style>

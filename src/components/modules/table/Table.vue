@@ -1,6 +1,6 @@
 <template>
-  <div :class="className" :style="{ height: height }">
-    <div class="table-container">
+  <div class="tbl" :class="className" :style="{ height: height }">
+    <div :id="id" class="table-container">
       <table>
         <slot />
       </table>
@@ -20,7 +20,7 @@ export default {
       type: String,
       default: '',
     },
-    name: {
+    id: {
       type: String,
       default: '',
     },
@@ -31,7 +31,7 @@ export default {
   },
   setup(props) {
     const state = reactive({
-      className: computed(() => `tbl ${props.type}`),
+      className: computed(() => props.type),
     });
 
     return {
@@ -43,9 +43,9 @@ export default {
 
 <style>
 .tbl {
-  overflow: hidden;
   position: relative;
   width: 100%;
+  background-color: #fff;
 }
 .table-container {
   width: 100%;
@@ -65,14 +65,11 @@ export default {
   z-index: 1;
 }
 .tbl thead th {
-  height: 50px;
-  padding: 0 10px;
-  font-weight: 400;
-  font-size: 13px;
-  line-height: 15px;
-  letter-spacing: 0.5px;
-  white-space: nowrap;
-  text-transform: capitalize;
+  height: 2.5rem;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 1.1;
+  color: #666;
   background-color: #eee;
   border-width: 1px 0 0;
   border-color: rgb(204 204 204 / 70%);
@@ -81,46 +78,21 @@ export default {
 .tbl tbody td {
   font-size: 13px;
   white-space: nowrap;
-  background-color: #fff;
   border-width: 0 0 1px;
+  border-color: rgb(0 0 0 / 5%);
 }
 .tbl tbody th {
-  font-weight: 400;
+  font-weight: normal;
 }
 .tbl tbody td {
-  overflow-x: hidden;
-  /* min-width: 7rem; */
-  height: 50px;
-  padding: 10px;
+  padding: 0.25rem 0.5rem;
+  color: #555;
 }
 .tbl tbody .empty {
   text-align: center !important;
+  font-family: 'KBFGTextL';
   font-size: 14px;
-  color: #999;
-}
-
-.tbl tbody td .text,
-.tbl tbody td span {
-  overflow: hidden;
-  display: inline-block;
-  vertical-align: middle;
-  /* max-width: 240px; */
-}
-.tbl tbody td a:hover {
-  color: var(--KB-gold);
-  text-decoration: underline;
-}
-.tbl tbody td svg {
-  width: 16px;
-  height: 16px;
-  vertical-align: -2px;
-  fill: currentColor;
-}
-.btn-detail {
-  color: var(--KB-gray);
-}
-.btn-detail:hover {
-  text-decoration: underline;
+  color: var(--gray);
 }
 
 /* basic type */
@@ -129,16 +101,36 @@ export default {
   text-align: center;
 }
 .tbl.basic tbody th {
+  height: 2.5rem;
   text-align: left;
-  padding: 10px;
-  padding-left: 20px;
-  text-transform: capitalize;
+}
+.tbl.basic tbody td {
+  height: 2.5rem;
 }
 
 /* data type */
-.tbl.data thead th,
-.tbl.data tbody td {
+.tbl.data thead th {
+  padding: 0 0.5rem;
+  white-space: nowrap;
+}
+.tbl.data thead th:not(.text-center),
+.tbl.data tbody td:not(.text-center) {
   text-align: left;
+}
+.tbl.data tbody td {
+  height: 45px;
+}
+.tbl.data thead th:first-child,
+.tbl.data tbody td:first-child {
+  padding-left: 20px;
+}
+.tbl.data tbody td a:hover {
+  color: var(--KB-gold);
+  text-decoration: underline;
+}
+.tbl.data tbody td > .text {
+  display: inline-flex;
+  vertical-align: middle;
 }
 </style>
 
@@ -146,6 +138,7 @@ export default {
 .chk-item {
   position: relative;
   /* width: 50px; */
+  padding-left: 10px !important;
 }
 .chk-item .inp {
   position: absolute;
@@ -178,5 +171,29 @@ export default {
   background-color: #fff;
   border-radius: 50%;
   content: ' ';
+}
+
+/* buttons */
+.tbl.data .btn {
+  display: inline-flex;
+  vertical-align: middle;
+  align-items: center;
+  justify-content: center;
+}
+/* 상세, 상태, 사유 */
+.btn.status,
+.btn.cause,
+.btn.detail {
+  height: 26px;
+  padding: 1px 0.55rem 0;
+  color: #888;
+  border: 1px solid #eee;
+  border-radius: 1rem;
+}
+.btn.status {
+  min-width: 3.3rem;
+}
+.tbl.data .btn .fi {
+  margin-right: 0.2rem;
 }
 </style>

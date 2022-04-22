@@ -1,8 +1,6 @@
 export * from './chart';
 export * from './gnb';
-export * from './icon';
 export * from './modal';
-export * from './panel';
 export * from './input';
 export * from './tooltip';
 export * from './info';
@@ -13,3 +11,6 @@ export * from './datepicker';
 export * from './indicator';
 export * from './spinner';
 export * from './editor';
+export * from './level';
+export * from './copy';
+export * from './result';

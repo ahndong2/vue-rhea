@@ -12,7 +12,7 @@
             <label for="title">제목</label>
           </dt>
           <dd class="flex-1">
-            <input id="title" v-model.trim="title" type="text" class="inp-t" placeholder="제목을 입력해 주세요.">
+            <input id="title" v-model.trim="title" type="text" spellcheck="false" class="inp-t" placeholder="제목을 입력해 주세요." maxlength="100">
           </dd>
         </dl>
         <dl>
@@ -23,14 +23,14 @@
             <editor :content="content" @input="inputContent" />
           </dd>
         </dl>
-        <div class="btn-area">
-          <button class="btn-cancel" @click="goBack">
-            취소
-          </button>
-          <button class="btn-submit" @click="submit">
-            저장
-          </button>
-        </div>
+      </div>
+      <div class="btn-area">
+        <button class="btn-cancel" @click="goBack">
+          취소
+        </button>
+        <button class="btn-submit" @click="submit">
+          저장
+        </button>
       </div>
     </div>
   </main>
@@ -118,33 +118,29 @@ export default {
 </script>
 
 <style scoped>
-.post {
-  padding: 0 100px;
+.content-inner {
+  max-width: 1024px;
 }
 .post > dl {
   display: flex;
-  padding: 10px;
-}
-.post > dl:first-child {
-  padding-top: 0;
+  padding-bottom: 1.5rem;
 }
 .post .label {
   width: 100px;
-  font-weight: 700;
-  line-height: 50px;
+  flex: 0 0 100px;
+  font-weight: bold;
+  line-height: 3rem;
   white-space: nowrap;
 }
 .post .inp-t {
   width: 100%;
-  height: 50px;
-  padding: 0 20px;
+  height: 3rem;
+  padding: 0 1.25rem;
   font-size: 14px;
   background-color: #fff;
   border: 1px solid #d1d1d1;
 }
 .btn-area {
-  margin-top: 1rem;
-  padding: 0 10px;
   text-align: right;
 }
 .btn-area button {
@@ -156,7 +152,7 @@ export default {
 }
 .btn-cancel {
   background-color: #e4e4e4;
-  color: #555;
+  color: #444;
 }
 .btn-submit {
   background-color: var(--KB-positive);

@@ -10,109 +10,64 @@
       <!-- search form -->
       <div id="toolbar" class="toolbar">
         <h3 class="hide">
-          조회 영역
+          검색 영역
         </h3>
         <div class="left-part">
           <div class="tool">
-            <select-box
-              id="organization"
-              name="organization"
-              title="Organization 선택"
-              :value="organizationID"
-              :options="organizationList"
-              @change="changeOrganization"
+            <select-box id="organization" name="organization" none="Org 선택"
+                        :value="organizationId" :options="organizationList" @change="changeOrganization"
             />
           </div>
           <div class="tool">
-            <select-box
-              id="prometheus"
-              name="prometheus"
-              title="Prometheus 선택"
-              :value="prometheusID"
-              :options="prometheusList"
-              @change="changePrometheus"
+            <select-box id="childOrganizationId" name="childOrganizationId" :value="childOrganizationId" none="Org 하위 미선택"
+                        :options="childOrganizationsList" :disabled="!organizationId || organizationId === ''" @change="changeChildOrganization"
             />
           </div>
-          <!-- 최근/기간 선택 (periodYN) -->
+          <div class="tool">
+            <select-box id="prometheus" name="prometheus" none="Data Source 전체"
+                        :value="prometheusId" :options="prometheusList" :disabled="!organizationId || organizationId === ''" @change="changePrometheus"
+            />
+          </div>
+          <!-- [S] 최근/기간 선택 (periodYN) -->
           <div class="tool">
             <div class="toggle">
-              <input
-                id="period"
-                v-model="periodYN"
-                type="checkbox"
-                name="period"
-                class="inp-c"
-                @change="changePeriod"
-              >
+              <input id="period" v-model="periodYN" type="checkbox" name="period" class="inp" @change="changePeriod">
               <label for="period" class="label" />
             </div>
           </div>
           <!-- 최근 (default) -->
           <div v-if="!periodYN" class="tool">
-            <select-box
-              id="selectSearchDuring"
-              name="searchDuring"
-              class="slt"
-              :value="searchData.searchDuring"
-              :options="selectSearchDuring"
-              @change="changeSearchDuring"
+            <select-box id="selectSearchDuring" name="searchDuring"
+                        :value="searchData.searchDuring" :options="selectSearchDuring" @change="changeSearchDuring"
             />
           </div>
           <!-- 기간 -->
           <div v-if="periodYN" class="tool">
-            <date-picker
-              id="startDate"
-              :options="{ mode: 'datetime', format: dateFormat, is24hr: true }"
-              :date="startDate"
-              @change="changeDate"
+            <date-picker id="startDate"
+                         :options="{ mode: 'datetime', format: dateFormat, is24hr: true }"
+                         :date="startDate"
+                         @change="changeDate"
             />
-            <span class="mx-2">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24px"
-                height="24px"
-                viewBox="0 0 24 24"
-                class="w-5 h-5 fill-current text-gray-600"
-              >
-                <rect fill="none" height="24" width="24" />
-                <path
-                  d="M15,5l-1.41,1.41L18.17,11H2V13h16.17l-4.59,4.59L15,19l7-7L15,5z"
-                />
-              </svg>
-            </span>
-            <date-picker
-              id="endDate"
-              :options="{ mode: 'datetime', format: dateFormat, is24hr: true }"
-              :date="endDate"
-              @change="changeDate"
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="w-5 h-5 mx-2 text-gray-600 fill-current">
+              <rect fill="none" width="24" height="24" />
+              <path d="M15,5l-1.41,1.41L18.17,11H2V13h16.17l-4.59,4.59L15,19l7-7L15,5z" />
+            </svg>
+            <date-picker id="endDate"
+                         :options="{ mode: 'datetime', format: dateFormat, is24hr: true }"
+                         :date="endDate"
+                         @change="changeDate"
             />
           </div>
-          <!--// 최근/기간 선택 (periodYN) -->
+          <!-- [E] 최근/기간 선택 (periodYN) -->
           <div class="tool">
             <button type="button" class="btn" @click="searchGroupJobs">
-              조회
+              <span class="text">검색</span>
             </button>
           </div>
-        </div>
-        <div class="right-part">
-          <div class="tool">
-            <button
-              title="새로고침"
-              class="btn btn-refresh"
-              @click="refreshChartData"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24px"
-                height="24px"
-                viewBox="0 0 24 24"
-              >
-                <path d="M0 0h24v24H0z" fill="none" />
-                <path
-                  d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
-                />
-              </svg>
-              새로고침
+          <div v-if="organizationId" class="tool">
+            <button id="refresh" class="btn btn-refresh" @click="refreshChartData">
+              <i class="fi fi-rr-rotate-right mr-1 text-xs" />
+              <span class="text">새로고침</span>
             </button>
           </div>
         </div>
@@ -122,12 +77,12 @@
         <div class="left-part">
           <div class="tool">
             <info
-              title="Prometheus Info:"
+              title="Data Source Info:"
               :content="prometheusInfo.description"
               :mouse-event="true"
             />
-            {{ prometheusInfo.csp }} |
-            Type: {{ prometheusInfo.installationType }}
+            {{ prometheusInfo.csp }}
+            <span class="type">Type: {{ prometheusInfo.installationType }}</span>
           </div>
           <div class="tool">
             <a
@@ -135,8 +90,7 @@
                 !(
                   prometheusInfo.grafanaLink === null ||
                   prometheusInfo.grafanaLink === 'null'
-                )
-              "
+                )"
               title="그라파나 바로가기"
               class="link g"
               @click.stop.prevent="moveLink(prometheusInfo.grafanaLink)"
@@ -148,24 +102,28 @@
         </div>
       </div>
 
-      <alert-status-table class="mt-12" :alert-status-data="alertStatusList" :status-type="2" @callback="openEventLogModal" />
+      <alert-status :alert-status-data="alertStatusList" :status-type="2"
+                    class="mt-12"
+                    @callback="openModalDetail"
+      />
+      <event-modal-detail id="eventDetailModal" ref="eventDetailModal" />
 
-      <section
-        v-if="groupJobsList.length"
-        id="monitoring"
-        class="monitoring mt-16"
-      >
-        <h3 class="section-title">
-          {{ prometheusInfo.name }}
-        </h3>
-        <group-job-panel
-          ref="groupJobPanel"
-          class="section-content mt-1"
-          @search="getMonitoringDetailAction"
+      <section v-if="groupJobsList.length > 0" class="mt-12">
+        <div v-if="noChart" class="empty">
+          [{{ activeType }}]의 경우 자체 솔루션 모니터링 항목으로 별도의 그래프 화면을 제공하지 않고 있습니다.
+        </div>
+        <hgroup v-show="!noChart" class="section-title">
+          <h3>{{ prometheusInfo.name }}</h3>
+          <p v-if="activeType === 'K8S'" class="guide">
+            <i class="fi fi-rr-exclamation" />
+            현재 시점 기준 (과거 날짜로 조회 시 Node/Pod/PodError의 과거 기준 그래프 지원은 안됨.)
+          </p>
+        </hgroup>
+        <group-job-list v-show="!noChart" class="section-content"
+                        @search="getMonitoringDetailAction"
         />
       </section>
     </div>
-    <event-modal ref="eventDetailModal" />
   </main>
 </template>
 
@@ -175,58 +133,83 @@ import {
 } from '@vue/composition-api';
 import { getInstance } from '@/composable';
 import {
-  SelectBox, AlertStatusTable, Info, DatePicker,
+  SelectBox, AlertStatus, Info, DatePicker,
 } from '@/components';
 import { SELECT_OPTIONS } from '@/views/monitoring/constants';
-import { GroupJobPanel, EventModal } from '@/views/monitoring/modules';
+import { GroupJobList, EventModalDetail } from '@/views/monitoring/modules';
 import { setLocalStorage } from '@/utils';
+// import { MONITORING_INFO } from '@/constants';
+
+interface Props {
+  org?: string;
+  prom?: string;
+  group?: string;
+  parent?: string;
+}
 
 export default {
   name: 'Monitoring',
   components: {
     SelectBox,
-    AlertStatusTable,
+    AlertStatus,
     Info,
     DatePicker,
-    GroupJobPanel,
-    EventModal,
+    GroupJobList,
+    EventModalDetail,
   },
-  setup() {
+  props: {
+    org: {
+      type: String,
+      default: '',
+    },
+    prom: {
+      type: String,
+      default: '',
+    },
+    group: {
+      type: String,
+      default: '',
+    },
+    parent: {
+      type: String,
+      default: '',
+    },
+  },
+  setup(props: Props) {
     const { instance } = getInstance();
     const { SEARCH_DURING } = SELECT_OPTIONS;
-    const ref = instance.$refs as any;
+    const ref = instance.$refs;
 
     const state = reactive({
       selectSearchDuring: SEARCH_DURING,
       dateFormat: 'YYYY-MM-DD HH:mm:ss',
       searchData: computed(() => instance.$store.state.monitoring.searchData),
-      alertStatusList: computed(
-        () => instance.$store.state.monitoring.alertStatusList,
-      ),
-      organizationID: '',
-      prometheusID: '',
-      prometheusInfo: computed(
-        () => instance.$store.state.monitoring.prometheusInfo,
-      ),
-      organizationList: computed(
-        () => instance.$store.state.monitoring.organizationList,
-      ),
-      prometheusList: computed(
-        () => instance.$store.state.monitoring.prometheusList,
-      ),
+      alertStatusList: computed(() => instance.$store.state.monitoring.alertStatusList),
+      organizationName: '',
+      organizationId: '',
+      childOrganizationId: '',
+      prometheusId: '',
+      groupId: '',
+      prometheusInfo: computed(() => instance.$store.state.monitoring.prometheusInfo),
+      organizationList: computed(() => instance.$store.state.monitoring.organizationList),
+      childOrganizationsList: [],
+      prometheusList: [],
+      // prometheusList: computed(() => instance.$store.state.monitoring.prometheusList),
       periodYN: false,
       startDate: '',
       endDate: '',
       activeIdx: computed(() => instance.$store.state.monitoring.activeIdx),
-      groupJobsList: computed(
-        () => instance.$store.state.monitoring.groupJobsList,
-      ),
+      activeType: computed(() => instance.$store.state.monitoring.activeType),
+      groupJobsList: computed(() => instance.$store.state.monitoring.groupJobsList),
+      isApiCall: false,
+      noChart: computed(() => state.activeType === 'RHEA' || state.activeType === 'WEBHOOK'),
     });
 
-    const changeSearchDuring = (e) => {
+    const changeSearchDuring = (e:Event):void => {
+      const target = e.target as HTMLInputElement;
       const data = {
         searchDuring: state.searchData.searchDuring,
-        [e.target.name]: Number(e.target.value),
+        [target.name]: Number(target.value),
       } as {
         searchDuring?: number;
         undefined?: number;
@@ -238,65 +221,94 @@ export default {
       const localStorageData = instance.$store.state.monitoring.searchData;
       setLocalStorage('rhea/monitoring', localStorageData);
     };
+
     // 기간 / 최근 토글 change
-    const changePeriod = () => {
+    const changePeriod = ():void => {
       if (state.periodYN) {
-        // v-cale
-        state.startDate = instance
-          .$moment()
-          .add(-1, 'hours')
-          .format('YYYY-MM-DD HH:mm:ss');
+        state.startDate = instance.$moment().add(-1, 'hours').format('YYYY-MM-DD HH:mm:ss');
         state.endDate = instance.$moment().format('YYYY-MM-DD HH:mm:ss');
       } else {
-        // select
         state.startDate = '';
         state.endDate = '';
       }
     };
 
     // 기간 date change
-    const changeDate = (date, id) => {
+    const changeDate = (date:string, id:string|number):void => {
       state[id] = date;
     };
 
     // alertStatus 검색 action
-    const searchAlertStatusData = async () => {
+    const searchAlertStatusData = async ():Promise<void> => {
       const searchParam = {
-        organizationID: state.organizationID,
-        prometheusID: state.prometheusID,
+        organizationId: state.childOrganizationId || state.organizationId,
+        prometheusId: state.prometheusId,
         startDate: state.startDate,
         endDate: state.endDate,
       };
 
-      await instance.$store.dispatch(
-        'monitoring/getAlertStatusData',
-        searchParam,
-      );
+      await instance.$store.dispatch('monitoring/getAlertStatusData', searchParam);
     };
 
-    // orgID 변경
-    const changeOrganization = async (e) => {
+    const setChildOrganizationsList = (org):void => {
+      state.childOrganizationsList = org.childOrganizations.map((v) => ({
+        id: v.id,
+        label: v.name,
+        value: v.id,
+        childOrganizations: v.childOrganizations,
+        prometheuses: v.prometheuses,
+      }));
+    };
+
+    const setPrometheusList = (org):void => {
+      state.prometheusList = org.prometheuses.map((v) => ({
+        id: v.id,
+        label: v.name,
+        value: v.id,
+        groupinfo: v.groupinfo,
+      }));
+      state.prometheusId = '';
+    };
+
+    // org 선택
+    const changeOrganization = async (e:Event):Promise<void> => {
+      const target = e.target as HTMLInputElement;
       instance.$store.commit('monitoring/initData');
 
-      if (e.target.value === '') {
+      state.organizationId = target.value;
+      if (target.value === '') {
         return;
       }
-      state.organizationID = e.target.value;
-      state.prometheusID = '';
+      state.prometheusId = '';
+      state.childOrganizationId = '';
 
-      instance.$store.dispatch(
-        'monitoring/getPrometheusList',
-        state.organizationID,
-      );
+      const selectOrg = state.organizationList.filter((org) => Number(org.id) === Number(state.organizationId))[0];
+      setChildOrganizationsList(selectOrg);
+      setPrometheusList(selectOrg);
       searchAlertStatusData();
     };
 
-    const changePrometheus = (e) => {
-      state.prometheusID = e.target.value;
-      instance.$store.commit('monitoring/setActiveIdx', 0);
+    // org 하위 변경
+    const changeChildOrganization = (e:Event):void => {
+      const target = e.target as HTMLInputElement;
+      state.childOrganizationId = target.value;
+      if (!target.value) {
+        const select = state.organizationList.filter((org) => Number(org.id) === Number(state.organizationId))[0];
+        setPrometheusList(select);
+        return;
+      }
+      const selectOrg = state.childOrganizationsList.filter((org) => Number(org.id) === Number(target.value))[0];
+      setPrometheusList(selectOrg);
+
+      searchAlertStatusData();
     };
 
-    const validateDate = () => {
+    const changePrometheus = (e:Event):void => {
+      const target = e.target as HTMLInputElement;
+      state.prometheusId = target.value;
+    };
+
+    const validateDate = ():boolean => {
       const start = state.startDate;
       const end = state.endDate;
       if (
@@ -310,9 +322,12 @@ export default {
         alert('기간을 선택해 주세요.');
         return false;
       }
-
+      if (start > instance.$moment().format('YYYY-MM-DD HH:mm:ss')) {
+        alert('현재 일시보다 미래를 선택할 수 없습니다.');
+        return false;
+      }
       if (start > end) {
-        alert('시작일은 종료일 보다 클수 없습니다.');
+        alert('해당 기간으로 조회 불가합니다.');
         return false;
       }
       if (
@@ -320,29 +335,42 @@ export default {
           .duration(instance.$moment(end).diff(instance.$moment(start)))
           .asMilliseconds() > 86432000
       ) {
-        alert('시작 시간과 종료 시간은 24시간 이상 차이 날 수 없습니다.');
+        alert('시작 일시와 종료 일시는 24시간 이상 차이 날 수 없습니다.');
         return false;
       }
       return true;
     };
 
-    const getMonitoringDetailAction = async () => {
+    const getMonitoringDetailAction = async ():Promise<void> => {
+      // 중복 호출 방어
+      if (state.isApiCall) return;
+      state.isApiCall = true;
+
       if (state.groupJobsList.length === 0) return;
-      const idx = state.activeIdx;
+      // 모니터링 데이터 초기화
+      instance.$store.commit('monitoring/setMonitoringData', null);
+      if (state.groupId) {
+        const newActiveIdx = state.groupJobsList.findIndex((v) => v.id === Number(state.groupId));
+        instance.$store.commit('monitoring/setActiveIdx', newActiveIdx === -1 ? 0 : newActiveIdx);
+      }
       const searchParam = {
-        id: state.groupJobsList[idx].id,
+        id: state.groupJobsList[state.activeIdx].id,
         startDate: state.startDate,
         endDate: state.endDate,
-        searchType: state.groupJobsList[idx].installationType === 'VM' ? 'CPU,Memory,Storage,NetworkReception' : 'Node,Pod,PodError',
+        searchType: state.activeType,
       };
 
       await instance.$store.dispatch(
         'monitoring/getMonitoringDetail',
         searchParam,
       );
+
+      state.isApiCall = false;
     };
-    const searchGroupJobs = async () => {
-      if (!state.organizationID || state.organizationID === '') {
+
+    const searchGroupJobs = async ():Promise<void> => {
+      if (!state.organizationId || state.organizationId === '') {
+        alert('Organization 명을 선택해 주세요.');
         return;
       }
       if (state.periodYN) {
@@ -352,18 +380,31 @@ export default {
         }
       }
 
+      // 모니터링 데이터 초기화
+      instance.$store.commit('monitoring/setActiveIdx', 0);
+      instance.$store.commit('monitoring/setActiveType', 'RESOURCE');
+
       await searchAlertStatusData();
-      if (state.prometheusID) {
+
+      if (state.prometheusId) {
         await instance.$store.dispatch(
           'monitoring/getGroupJobsList',
-          state.prometheusID,
+          state.prometheusId,
         );
         await getMonitoringDetailAction();
+      } else {
+        instance.$store.commit('monitoring/setGroupJobsList', []);
       }
     };
 
-    const refreshChartData = () => {
-      if (!state.organizationID) {
+    const animateRefresh = ():void => {
+      const refresh = document.querySelector('#refresh') as HTMLElement;
+      refresh.classList.add('on');
+      setTimeout(() => { refresh.classList.remove('on'); }, 1000);
+    };
+
+    const refreshChartData = ():void => {
+      if (!state.organizationId) {
         return;
       }
       if (state.periodYN) {
@@ -373,14 +414,25 @@ export default {
         }
       }
       getMonitoringDetailAction();
+      animateRefresh();
     };
 
-    const openEventLogModal = (type) => {
+    const openModalDetail = (data):void => {
+      let organizationName = '';
+      let parentOrgName = '';
+      if (state.childOrganizationId) {
+        parentOrgName = state.organizationList.find((v) => String(v.value) === state.organizationId).label;
+        organizationName = state.childOrganizationsList.find((v) => String(v.value) === state.childOrganizationId).label;
+      } else {
+        organizationName = state.organizationList.find((v) => String(v.value) === state.organizationId).label;
+      }
+
       const eventModalData = {
-        type,
-        visible: true,
-        organizationID: state.organizationID,
-        prometheusID: state.prometheusID,
+        ...data,
+        organizationId: state.organizationId,
+        prometheusId: state.prometheusId,
+        organizationName,
+        parentOrgName,
         searchDuring: state.searchData.searchDuring,
         periodYN: state.periodYN,
         startDate: state.startDate,
@@ -391,16 +443,25 @@ export default {
     };
 
     const applyQueryData = async () => {
-      state.organizationID = String(instance.$route.query.org);
-      await instance.$store.dispatch(
-        'monitoring/getPrometheusList',
-        state.organizationID,
-      );
-      state.prometheusID = String(instance.$route.query.prom);
+      state.organizationId = props.parent ? String(props.parent) : String(props.org);
+      state.childOrganizationId = props.parent ? String(props.org) : '';
+
+      const selectOrg = state.organizationList.filter((org) => Number(org.id) === Number(state.organizationId))[0];
+      setChildOrganizationsList(selectOrg);
+
+      if (props.parent) {
+        const selectCOrg = state.childOrganizationsList.filter((org) => Number(org.id) === Number(state.childOrganizationId))[0];
+        setPrometheusList(selectCOrg);
+      } else {
+        setPrometheusList(selectOrg);
+      }
+
+      state.prometheusId = String(props.prom);
+      state.groupId = String(props.group || '');
 
       await searchGroupJobs();
-      // await getMonitoringDetailAction();
     };
+
     const moveLink = (link) => {
       let url = 'https://screen.digitalkds.co.kr';
       if (!(link === null || link === 'null')) {
@@ -408,39 +469,66 @@ export default {
       }
       window.open(url);
     };
+
     const initData = () => {
       instance.$store.commit('monitoring/initData');
     };
+
     onMounted(async () => {
-      if (instance.$route.query.org && instance.$route.query.prom) {
-        applyQueryData();
-      } else {
-        initData();
-      }
+      initData();
 
       await instance.$store.dispatch('monitoring/getOrgListData');
+      if (props.org && props.prom) {
+        applyQueryData();
+      }
     });
-
     return {
       ...toRefs(state),
       changeDate,
       changeSearchDuring,
       changeOrganization,
+      changeChildOrganization,
       changePrometheus,
       searchGroupJobs,
       changePeriod,
       refreshChartData,
       getMonitoringDetailAction,
       moveLink,
-      openEventLogModal,
+      openModalDetail,
     };
   },
 };
 </script>
 
 <style scoped>
-.controls {
-  top: calc(-2rem - 50px);
+.controls {top: calc(-2rem - 50px);}
+.toolbar .slt[name="organization"],
+.toolbar .slt[name="prometheus"] {
+  width: inherit;
+  min-width: 10rem;
+}
+.toolbar:nth-child(2) {font-size: 15px;}
+
+::v-deep .info-layer {
+  top: 28px;
+  left: 110px;
+  transform: none;
+}
+
+.type {
+  position: relative;
+  padding-left: 8px;
+  margin-left: 5px;
+}
+.type::before {
+  content: ' ';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 13px;
+  background-color: var(--lightgray);
 }
 
 .link {
@@ -461,5 +549,15 @@ export default {
 }
 .link span {
   padding-top: 2px;
+}
+
+.guide {
+  position: absolute;
+  right: 0.25rem;
+  top: 0.25rem;
+}
+::v-deep .empty {
+  font-size: 15px;
+  color: var(--gray);
 }
 </style>

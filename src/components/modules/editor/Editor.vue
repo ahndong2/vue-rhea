@@ -21,7 +21,7 @@ export default {
     const state = reactive({
       editorData: '',
       editorConfig: {
-        height: '300px',
+        height: '360px',
       },
     });
 

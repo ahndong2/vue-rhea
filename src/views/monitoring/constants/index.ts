@@ -23,8 +23,6 @@ const SELECT_OPTIONS = {
     { label: '주의', value: 1 },
     { label: '경고', value: 2 },
     { label: '심각', value: 3 },
-    // { label: '해제', value: 4 },
-    // { label: '미해제', value: 0 },
   ],
   TYPE: [
     { label: 'CPU', value: 'CPU' },
@@ -47,4 +45,5 @@ const CHART_COLORS = [
   'rgb(153, 102, 255)',
   'rgb(201, 203, 207)',
 ];
+
 export { SELECT_OPTIONS, CHART_COLORS };

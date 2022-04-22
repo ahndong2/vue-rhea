@@ -2,8 +2,7 @@ import { DashboardState } from '@/store/type';
 import * as actions from './actions';
 import * as mutations from './mutations';
 
-const localStorage = window.localStorage.getItem('rhea/dashboard') as string;
-const alertData = JSON.parse(localStorage) || {
+const localStorage = () => JSON.parse(window.localStorage.getItem('rhea/dashboard')as string) || {
   refreshTime: 60,
   minute: 5,
   day: 2,
@@ -12,10 +11,10 @@ const alertData = JSON.parse(localStorage) || {
 
 const state: DashboardState = {
   alert: {
-    refreshTime: alertData.refreshTime,
-    minute: alertData.minute,
-    day: alertData.day,
-    hour: alertData.hour,
+    refreshTime: localStorage().refreshTime,
+    minute: localStorage().minute,
+    day: localStorage().day,
+    hour: localStorage().hour,
   },
   currentTime: 0,
   beforeMinutes: 0,
@@ -26,6 +25,7 @@ const state: DashboardState = {
   dayUnresolvedCnt: 0,
   totalUnresolvedCnt: 0,
   orgMonitoringList: [],
+  orgMonitoringNameList: [],
 };
 
 export default {

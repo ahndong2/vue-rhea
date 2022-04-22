@@ -1,4 +1,9 @@
-import GroupJobPanel from './GroupJobPanel.vue';
-import EventModal from './EventModal.vue';
+import GroupJobList from './GroupJobList.vue';
+import EventModalDetail from './EventModalDetail.vue';
+import EventListTable from './EventListTable.vue';
+import KubernetesPanel from './KubernetesPanel.vue';
+import HttpProbePanel from './HttpProbePanel.vue';
 
-export { GroupJobPanel, EventModal };
+export {
+  GroupJobList, EventListTable, EventModalDetail, KubernetesPanel, HttpProbePanel,
+};

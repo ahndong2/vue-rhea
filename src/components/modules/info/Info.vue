@@ -5,7 +5,7 @@
       <span v-if="title" class="tit">{{ title }}</span>
     </button>
     <transition name="fade">
-      <div v-if="visible" class="info-layer" :class="dir">
+      <div v-if="visible && content.trim()" class="info-layer" :class="dir">
         <div class="info-content">
           {{ content }}
           <slot />
@@ -45,7 +45,6 @@ export default {
       default: '',
     },
   },
-
   setup(props: Props) {
     const state = reactive({
       visible: false,
@@ -63,6 +62,7 @@ export default {
         state.visible = false;
       }
     };
+
     return {
       ...toRefs(state),
       toggleInfo,
@@ -89,10 +89,10 @@ export default {
 }
 .ic-info {
   display: inline-block;
-  width: 17px;
-  height: 17px;
-  font-size: 12px;
-  line-height: 20px;
+  width: 1rem;
+  height: 1rem;
+  font-size: 11px;
+  line-height: 1.9;
   text-align: center;
   color: var(--white);
   background: #a5a5a5;
@@ -100,7 +100,7 @@ export default {
   opacity: .8;
 }
 .ic-info + .tit {
-  margin-left: 8px;
+  margin-left: .5rem;
   padding-top: 2px;
   white-space: nowrap;
 }
@@ -109,23 +109,23 @@ export default {
   overflow: hidden;
   position: absolute;
   top: 50%;
-  left: calc( 100% + 8px );
+  left: calc(100% + 5px);
   transform: translate(0,-50%);
-  z-index: 100;
+  z-index: 10;
   background: #fff;
-  border: 1px solid #ccc;
+  border: 1px solid var(--lightgray);
   border-radius: 6px;
   box-shadow: 1px 1px 3px rgba(0,0,0,.2);
   cursor: default;
 }
-
 .info-content {
   min-width: 200px;
   min-height: 40px;
   padding: 10px 15px;
-  font-weight: 400;
-  font-size: 15px;
+  font-weight: normal;
+  font-size: 14px;
   color: #333;
+  white-space: nowrap;
 }
 .info-close {
   position: absolute;

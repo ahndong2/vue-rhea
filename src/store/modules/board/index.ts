@@ -14,9 +14,11 @@ const state: BoardState = {
     paged: 10,
   },
   noticePost: {
+    id: 0,
     title: '',
     content: '',
   },
+  commentList: [],
 };
 
 export default {

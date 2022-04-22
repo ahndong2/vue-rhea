@@ -1,0 +1,61 @@
+{
+  "APP": {
+    "TITLE" : "Rhea 통합 모니터링 시스템"
+  },
+  "MENU": {
+    "HOME": "Home",
+    "EVENT": "이벤트",
+    "MONITORING": "모니터링",
+    "NOTICE": "공지사항",
+    "ADMIN": "Admin",
+    "PASSWORD": "PW변경",
+    "LOGOUT": "로그아웃"
+  },
+  "COMMON": {
+    "HIERARCHY": {
+      "ORGANIZATION": "Oraganization",
+      "ORGANIZATION_SUB": "Oraganization 하위",
+      "DATA_SOURCE": "Data Source",
+      "PROJECT": "Project 분류"
+    },
+    "STATUS": {
+      "OCCUR": "발생",
+      "PROCESSING": "조치중",
+      "CONTACT_COMPLETE": "연락완료",
+      "UNIDENTIFIED_SOLVED": "미확인 해제",
+      "REJECTED": "반려",
+      "MISUNDERSTOOD": "오탐",
+      "SOLVED": "해제"
+    }
+  },
+  "DASHBOARD": {
+    "ALERT_STATUS": {
+      "TITLE": "Alert 현황",
+      "LEVEL": {
+        "SOLVED": "해제",
+        "CAUTION": "주의",
+        "WARNING": "경고",
+        "DANGER": "심각",
+        "UNSOLVED": "미해제"
+      }
+    },
+    "MONITORING": {
+      "TITLE": "모니터링",
+      "GRAFANA": "Grafana",
+      "DETAILS": "Details"
+    },
+    "NOTICE": {
+      "TITLE": "공지사항"
+    }
+  },
+  "EVENT": {
+    "TAB": {
+      "OCCUR": "발생",
+      "SOLVED": "해제",
+      "IGNORE": "예외",
+      "UNKNOWN": "미등록"
+    }
+  },
+  "MONITORING": {
+  }
+}

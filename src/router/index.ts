@@ -2,11 +2,6 @@ import Vue from 'vue';
 import VueRouter, { RouteConfig } from 'vue-router';
 import { apiSchedule } from '@/utils';
 
-// import DashBoard from '@/views/dashboard/pages/Dashboard.vue';
-// import Event from '@/views/event/pages/Event.vue';
-// import Monitoring from '@/views/monitoring/pages/Monitoring.vue';
-// import NoticeList from '@/views/notice/pages/NoticeList.vue';
-
 const DashBoard = () => import(/* webpackChunkName: "DashBoard" */ '@/views/dashboard/pages/Dashboard.vue');
 const Event = () => import(/* webpackChunkName: "Event" */ '@/views/event/pages/Event.vue');
 const Monitoring = () => import(/* webpackChunkName: "Monitoring" */ '@/views/monitoring/pages/Monitoring.vue');
@@ -33,14 +28,20 @@ const routes: Array<RouteConfig> = [
     path: '/vue/event',
     name: 'Event',
     component: Event,
-    props: ({ query }) => ({
-      tabKey: query.tabKey,
+    props: ({ params }) => ({
+      tabKey: params.tabKey,
     }),
   },
   {
     path: '/vue/monitoring',
     name: 'Monitoring',
     component: Monitoring,
+    props: ({ params }) => ({
+      org: String(params.org || ''),
+      prom: String(params.prom || ''),
+      group: String(params.group || ''),
+      parent: String(params.parent || ''),
+    }),
   },
   {
     path: '/vue/notice',
@@ -68,14 +69,13 @@ const router = new VueRouter({
   mode: 'history',
   routes,
   scrollBehavior() {
+    const container = document.getElementById('container') as HTMLElement;
+    container.scrollTo({ top: 0, left: 0 });
     return { x: 0, y: 0 };
   },
 });
 
 router.beforeEach(async (to, from, next) => {
-  // if (from.name) {
-  //   apiSchedule(to);
-  // }
   apiSchedule(to);
   next();
 });

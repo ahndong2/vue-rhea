@@ -28,7 +28,6 @@ export default defineComponent({
   setup(props) {
     const state = reactive({
       isActive: false,
-      // href: computed(() => `#${props.name.toLowerCase().replace(/ /g, '-')}`),
     });
 
     onMounted(() => {
@@ -41,7 +40,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style scoped>
-
-</style>

@@ -1,5 +1,6 @@
 import {
-  BoardState, BoardSearchParam, NoticeBoard, NoticePost,
+  // eslint-disable-next-line import/named
+  BoardState, BoardSearchParam, NoticeBoard, NoticePost, NoticeComment,
 } from '@/store/type';
 import { RespBoardState } from '@/api/type';
 
@@ -20,4 +21,8 @@ export const setNoticeBoard = (state: BoardState, notice: NoticeBoard): void => 
 
 export const setNoticePost = (state: BoardState, post: NoticePost): void => {
   state.noticePost = post;
+};
+
+export const setComments = (state: BoardState, comments: NoticeComment[]): void => {
+  state.commentList = comments;
 };

@@ -1,31 +1,37 @@
 <template>
   <div class="pagination">
-    <a href="javascript:void(0);" class="page-first" @click="prevPage(1)">
-      <icon name="page_first" />
-      <span class="hide">첫 페이지</span>
+    <a title="첫 페이지" class="page-first" @click.prevent="goPrevPage(1)">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+        <path d="M24 0v24H0V0h24z" fill="none" />
+        <path d="M18.41 16.59L13.82 12l4.59-4.59L17 6l-6 6 6 6 1.41-1.41zM6 6h2v12H6V6z" /></svg>
     </a>
-    <a href="javascript:void(0);" class="page-prev" @click="prevPage(currentPage - 1)">
-      <icon name="arr_l" />
-      <span class="hide">이전 페이지</span>
+    <a title="이전 페이지" class="page-prev" @click.prevent="goPrevPage(currentPage - 1)">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+        <path d="M0 0h24v24H0z" fill="none" /><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+      </svg>
     </a>
-    <a v-for="(page, idx) in pageList" :key="idx" href="javascript:void(0);"
-       :class="['link', {'active': page === currentPage}]"
-       @click="changeCurrentPage(page)"
-    >{{ page }}</a>
-    <a href="javascript:void(0);" class="page-next" @click="nextPage(currentPage + 1)">
-      <icon name="arr_r" />
-      <span class="hide">다음 페이지</span>
+    <a v-for="(page, idx) in pageNewList" :key="idx"
+       class="link" :class="{'active': page === currentPage}"
+       @click.prevent="changePage(page)"
+    >
+      {{ page }}
     </a>
-    <a href="javascript:void(0);" class="page-last" @click="nextPage(totalPage())">
-      <icon name="page_last" />
-      <span class="hide">마지막 페이지</span>
+    <a title="다음 페이지" class="page-next" @click.prevent="goNextPage(currentPage + 1)">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+        <path d="M0 0h24v24H0z" fill="none" /><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+      </svg>
+    </a>
+    <a title="마지막 페이지" class="page-last" @click.prevent="goNextPage(totalPage())">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+        <path d="M0 0h24v24H0V0z" fill="none" />
+        <path d="M5.59 7.41L10.18 12l-4.59 4.59L7 18l6-6-6-6-1.41 1.41zM16 6h2v12h-2V6z" />
+      </svg>
     </a>
   </div>
 </template>
 
 <script lang="ts">
 import { computed, reactive, toRefs } from '@vue/composition-api';
-import Icon from '@/components/modules/icon/Icon.vue';
 
 interface Props {
   currentPage?: number;
@@ -34,21 +40,20 @@ interface Props {
   maxSize?: number;
 }
 export default {
-  components: { Icon },
   props: {
-    currentPage: { // 현재페이지
+    currentPage: { // 현재 페이지
       type: Number,
       default: 1,
     },
-    totalItems: { // 전체 item 갯수
+    totalItems: { // 전체 item 개수
       type: Number,
       default: 1,
     },
-    itemsPerPage: { // 한페이지 목록 갯수
+    itemsPerPage: { // 한페이지 목록 개수
       type: Number,
       default: 20,
     },
-    maxSize: { // 페이징 갯수
+    maxSize: { // 페이징 개수(홀수)
       type: Number,
       default: 5,
     },
@@ -61,42 +66,71 @@ export default {
     };
 
     const calculateStartPage = () => {
-      const currentPage = Number(props.currentPage);
-      const maxSize = Number(props.maxSize);
+      const current = Number(props.currentPage);
+      const limit = Number(props.maxSize);
 
-      return currentPage % maxSize === 0
-        ? maxSize * (Math.floor(currentPage / maxSize) - 1) + 1
-        : maxSize * Math.floor(currentPage / maxSize) + 1;
+      const startPage = current % limit === 0
+        ? limit * (Math.floor(current / limit) - 1) + 1
+        : limit * Math.floor(current / limit) + 1;
+      return startPage;
     };
 
     const calculateEndPage = () => {
-      const page = Number(props.currentPage);
+      const current = Number(props.currentPage);
       const limit = Number(props.maxSize);
       const total = totalPage();
 
-      let endPage = limit * (Math.floor(page / limit) + 1);
-
-      if (page % limit === 0) {
-        endPage = limit * Math.floor(page / limit);
-      }
-
-      return total < endPage ? total : endPage;
+      const endPage = current % limit === 0
+        ? limit * Math.floor(current / limit)
+        : limit * (Math.floor(current / limit) + 1);
+      return endPage > total ? total : endPage;
     };
 
-    const prevPage = (n) => {
+    const getPageList = () => {
+      const current = Number(props.currentPage);
+      const limit = Number(props.maxSize);
+      const half = Math.floor(limit / 2);
+      const total = totalPage();
+      const newArr = [] as number[];
+      let start:number;
+      let end:number;
+      if (total === 0) {
+        start = 1;
+        end = 1;
+      } else if (total < limit) {
+        start = 1;
+        end = total;
+      } else if (current <= half) {
+        start = 1;
+        end = limit;
+      } else if (current + half >= total) {
+        start = total - limit + 1;
+        end = total;
+      } else {
+        start = current - half;
+        end = current + half;
+      }
+      for (let i = start; i <= end; i++) {
+        newArr.push(i);
+      }
+      return newArr;
+    };
+
+    const changePage = (v) => {
+      if (props.currentPage === v) return;
+      emit('change', v);
+    };
+
+    const goPrevPage = (n) => {
       if (Number(props.currentPage) <= 1) return;
       emit('change', n);
     };
 
-    const nextPage = (n) => {
+    const goNextPage = (n) => {
       const total = totalPage();
 
       if (Number(props.currentPage) >= total) return;
       emit('change', n);
-    };
-
-    const changeCurrentPage = (v) => {
-      emit('change', v);
     };
 
     const state = reactive({
@@ -105,23 +139,20 @@ export default {
       totalPage: computed(() => totalPage()),
       pageList: computed(() => {
         const newArr = [] as number[];
-
-        for (let i = state.startPage; i <= state.endPage; i += 1) {
+        for (let i = state.startPage; i <= state.endPage; i++) {
           newArr.push(i);
-        }
-        if (newArr.length === 0) {
-          newArr.push(1);
         }
         return newArr;
       }),
+      pageNewList: computed(() => getPageList()),
     });
 
     return {
       ...toRefs(state),
-      changeCurrentPage,
-      prevPage,
-      nextPage,
       totalPage,
+      changePage,
+      goPrevPage,
+      goNextPage,
     };
   },
 };
@@ -133,10 +164,20 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 40px;
 }
 .pagination > a {
   display: inline-flex;
+}
+.pagination .link {
+  margin: 0 15px;
+  color: #777;
+}
+.pagination .link:hover {
+  color: var(--KB-gold);
+}
+.pagination .link.active {
+  font-weight: bold;
+  color: #111;
 }
 .pagination [class|="page"] {
   position: relative;
@@ -157,19 +198,7 @@ export default {
 .pagination .page-next {
   margin-left: 30px;
 }
-.pagination .ico {
-  opacity: .6;
-}
-.pagination .link {
-  margin: 0 15px;
-  color: #777;
-}
-.pagination .link:hover {
-  color: var(--KB-gold);
-}
-.pagination .link.active {
-  font-weight: 700;
-  color: #111;
-  /* color: var(--KB-positive); */
+.pagination svg {
+  fill: #666;
 }
 </style>

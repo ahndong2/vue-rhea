@@ -37,3 +37,7 @@ export const setAlertSummary = (state: DashboardState, data:RespDashboardAlertSt
 export const setOrgMonitoringList = (state:DashboardState, data) => {
   state.orgMonitoringList = data;
 };
+
+export const setOrgMonitoringNameList = (state:DashboardState, data) => {
+  state.orgMonitoringNameList = data;
+};

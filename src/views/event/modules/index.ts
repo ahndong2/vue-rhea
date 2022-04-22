@@ -4,7 +4,12 @@ import EventListTable from './EventListTable.vue';
 
 import EventModalExcCreate from './EventModalExcCreate.vue';
 import EventModalExcUpdate from './EventModalExcUpdate.vue';
+import EventModalStatus from './EventModalStatus.vue';
+import EventModalDetail from './EventModalDetail.vue';
+import EventModalRelease from './EventModalRelease.vue';
 
 export {
-  SearchForm, EventRefresh, EventListTable, EventModalExcCreate, EventModalExcUpdate,
+  SearchForm, EventRefresh, EventListTable,
+  EventModalExcCreate, EventModalExcUpdate,
+  EventModalStatus, EventModalDetail, EventModalRelease,
 };

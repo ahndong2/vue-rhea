@@ -13,7 +13,6 @@
 import {
   defineComponent, reactive, toRefs, watch,
 } from '@vue/composition-api';
-import { getInstance } from '@/composable';
 
 export default defineComponent({
   name: 'Tooltip',
@@ -30,13 +29,11 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { instance } = getInstance();
-
     const state = reactive({
       visible: false,
     });
 
-    watch(() => props.tooltipData, (value) => {
+    watch(() => props.tooltipData, (value):void => {
       state.visible = !!value;
     });
 

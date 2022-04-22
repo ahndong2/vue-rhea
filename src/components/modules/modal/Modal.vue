@@ -1,41 +1,39 @@
 <template>
-  <section :id="id" class="modal">
-    <transition name="fade">
-      <div v-if="modalVisible" class="modal-backdrop" @click.self="closeModal(id)">
-        <div class="modal-dialog" :class="size">
-          <article class="modal-inner">
-            <div v-if="slot.header" class="modal-header">
-              <slot name="header" />
-              <button class="btn-close" @click="closeModal(id)">
-                <icon name="close" size="30" />
-                <span class="hide">닫기</span>
-              </button>
-            </div>
-            <div class="modal-content">
-              <slot name="body" />
-            </div>
-            <div v-if="slot.footer" class="modal-footer">
-              <slot name="footer" />
-            </div>
-          </article>
-        </div>
+  <transition name="fade">
+    <section v-if="modalVisible" :id="id" class="modal">
+      <div class="modal-backdrop" @click="closeModal(id)" />
+      <div class="modal-dialog" :class="size">
+        <article class="modal-inner">
+          <div v-if="slot.header" class="modal-header">
+            <slot name="header" />
+            <button class="btn-close" @click="closeModal(id)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24">
+                <path d="M0 0h24v24H0z" fill="none" />
+                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+              </svg>
+              <span class="hide">닫기</span>
+            </button>
+          </div>
+          <div class="modal-content">
+            <slot name="body" />
+          </div>
+          <div v-if="slot.footer" class="modal-footer">
+            <slot name="footer" />
+          </div>
+        </article>
       </div>
-    </transition>
-  </section>
+    </section>
+  </transition>
 </template>
 
 <script lang="ts">
 import {
   reactive, toRefs, watch,
 } from '@vue/composition-api';
-import Icon from '@/components/modules/icon/Icon.vue';
 import { getInstance } from '@/composable';
 
 export default {
   name: 'Modal',
-  components: {
-    Icon,
-  },
   props: {
     id: {
       type: String,
@@ -74,33 +72,45 @@ export default {
 </script>
 
 <style>
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 110;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
 .modal-backdrop {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 100;
+  z-index: 120;
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
   height: 100%;
   background: rgba(0,0,0,.25);
-  transition: opacity .5s ease;
 }
 .modal-dialog {
   overflow: hidden;
+  position: relative;
   display: flex;
-  width: 90vw;
+  z-index: 150;
   max-width: var(--inner-width);
-  max-height: 800px;
+  max-height: calc(100vh - 60px);
 }
 .modal-dialog.sm {
   width: 600px;
 }
+.modal-dialog.md {
+  width: 50vw;
+}
 .modal-dialog.lg {
-  width: calc(100vw - 60px);
-  /* min-height: 80vh; */
-  max-height: calc(100vh - 60px);
+  width: 85vw;
 }
 .modal-inner {
   overflow: hidden;
@@ -122,6 +132,7 @@ export default {
   font-size: 22px;
   height: 60px;
   line-height: 62px;
+  cursor: default;
 }
 .modal-header .btn-close {
   position: absolute;
@@ -131,14 +142,14 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 30px;
-  height: 40px;
+  width: 2.5rem;
+  height: 2.5rem;
   margin: auto;
 }
 .modal-content {
   overflow: auto;
+  position: relative;
   flex: 1;
-  /* max-height: calc(100vh - 20rem); */
   padding: 1.5rem;
 }
 .modal-footer {
@@ -151,10 +162,11 @@ export default {
 }
 .modal-footer .modal-button {
   min-width: 100px;
-  height: 40px;
+  height: 2.5rem;
   margin-left: 1rem;
-  padding: 0 1rem;
-  font-weight: 700;
+  padding: 2px 1rem 0;
+  font-size: 15px;
+  color: #757575;
   border-radius: 0.25rem;
 }
 .modal-button.transparent {
@@ -166,11 +178,19 @@ export default {
   color: #fff;
 }
 
+.modal-top {
+  position: relative;
+  margin: -1.5rem -1.5rem 1.5rem;
+  padding: 1rem 1.4rem;
+  border-bottom: 1px solid rgb(0 0 0 / 5%);
+}
+</style>
+
+<style scoped>
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity .5s ease;
 }
-
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;

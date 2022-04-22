@@ -1,6 +1,8 @@
 <template>
   <transition name="fade">
-    <div v-if="tooltipVisible" class="tooltip">
+    <div v-if="tooltipVisible" class="tooltip"
+         @mouseenter="checkMouseEvent" @mouseleave="checkMouseEvent"
+    >
       <div class="tooltip-content" v-html="content" />
     </div>
   </transition>
@@ -21,10 +23,14 @@ export default {
       default: false,
     },
   },
-  setup(props) {
+  setup(props, { emit }) {
     const state = reactive({
       tooltipVisible: props.visible,
     });
+
+    const checkMouseEvent = (e:Event):void => {
+      emit('mouse', e);
+    };
 
     watch(() => props.visible, (newValue) => {
       state.tooltipVisible = newValue;
@@ -32,6 +38,7 @@ export default {
 
     return {
       ...toRefs(state),
+      checkMouseEvent,
     };
   },
 };
@@ -44,14 +51,15 @@ export default {
   cursor: default;
   transition: opacity .3s ease;
 }
-
 .tooltip-content {
+  position: relative;
+  overflow: hidden;
   width: 300px;
   padding: 12px 15px;
-  font-size: 15px;
+  font-size: 14px;
   color: #333;
   background: #fff;
-  border: 1px solid #ccc;
+  border: 1px solid var(--lightgray);
   border-radius: 6px;
   box-shadow: 1px 1px 3px rgba(0,0,0,.2);
 }

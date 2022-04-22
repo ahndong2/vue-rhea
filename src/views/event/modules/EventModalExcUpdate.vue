@@ -5,39 +5,39 @@
     </template>
 
     <template #body>
+      <div class="modal-top">
+        <p class="guide">
+          <i class="fi fi-rr-exclamation" />
+          아래 항목에 해당되는 Event Type의 모든 이벤트 로그는 전체 예외 취소 됩니다.
+        </p>
+      </div>
       <ul class="data-list">
-        <li class="flex-row">
+        <!-- <li class="flex-row">
           <strong class="tit">Organization</strong>
           <div class="con">
             {{ data.orgNm }}
           </div>
-        </li>
+        </li> -->
         <li class="flex-row">
-          <strong class="tit">Prometheus</strong>
+          <strong class="tit">Data Source</strong>
           <div class="con">
             {{ data.prometheusNm }}
           </div>
         </li>
         <li class="flex-row">
-          <strong class="tit">Group&amp;Job</strong>
+          <strong class="tit">Project 분류</strong>
           <div class="con">
             {{ data.groupInfoNm }}
           </div>
         </li>
         <li class="flex-row">
-          <strong class="tit">발생 자원</strong>
-          <div class="con">
-            {{ data.resourceType }}({{ data.resourceVal }})
-          </div>
-        </li>
-        <li class="flex-row">
           <strong class="tit">Event Type</strong>
           <div class="con">
-            {{ data.errorType }}
+            {{ data.thresholdResourceType }}
           </div>
         </li>
-        <li class="flex-row">
-          <strong class="tit">예외 처리 사유</strong>
+        <li class="flex-col">
+          <strong class="tit">예외 사유</strong>
           <div class="con">
             {{ ignoreReason }}
           </div>
@@ -45,7 +45,7 @@
         <li class="flex-col">
           <strong class="tit">예외 취소 사유</strong>
           <div class="con">
-            <textarea v-model.trim="ignoreCancelReason" cols="30" rows="10" maxlength="400" style="height: 130px;" />
+            <textarea v-model.trim="ignoreCancelReason" cols="30" rows="10" maxlength="400" style="height: 130px;" spellcheck="false" />
           </div>
         </li>
       </ul>
@@ -70,6 +70,11 @@ import { getInstance } from '@/composable';
 import { Modal } from '@/components';
 import { EventLog } from '@/store/type';
 
+interface Props {
+  id?:string;
+  visible?:boolean;
+}
+
 export default defineComponent({
   name: 'EventModalExcUpdate',
   components: {
@@ -85,7 +90,7 @@ export default defineComponent({
       default: false,
     },
   },
-  setup(props, { emit }) {
+  setup(props:Props, { emit }) {
     const { instance } = getInstance();
     const state = reactive({
       proxyVisible: props.visible,
@@ -105,11 +110,11 @@ export default defineComponent({
       state.ignoreCancelReason = '';
     };
 
-    const cancel = () => {
+    const cancel = ():void => {
       const confirm = window.confirm('저장하지 않고 나가시겠습니까?');
       if (confirm) closeModal();
     };
-    const save = () => {
+    const save = ():void => {
       if (state.ignoreCancelReason) {
         const saveData = {
           ...state.data,

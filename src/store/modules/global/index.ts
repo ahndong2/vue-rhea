@@ -7,6 +7,9 @@ const state: GlobalState = {
   menuListOrigin: [],
   menuList: [],
   spinner: false,
+  apiRequestCount: 0,
+  apiResponseCount: 0,
+  topBtn: false,
 };
 
 export default {

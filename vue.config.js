@@ -19,6 +19,19 @@ const prdConfig = {
     },
   },
 };
-const config = productionEnv ? prdConfig : {};
+
+const localConfig = {
+  devServer: {
+    proxy: {
+      "/api_v1": {
+        target: `http://rheapjt-rheaspringboot.dmz1.dev.cip.digitalkds.co.kr`,
+        // ws: true,
+        // changeOrigin: true,
+      },
+    },
+  },
+};
+
+const config = productionEnv ? prdConfig : localConfig;
 
 module.exports = config;

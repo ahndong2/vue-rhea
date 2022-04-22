@@ -2,7 +2,10 @@
   <header class="header">
     <div class="inner">
       <h1 class="logo">
-        <router-link :to="{ path: '/'}" replace class="home-link">
+        <router-link :to="{ name: 'Home'}"
+                     class="home-link"
+                     @click.native="goHome"
+        >
           <b>Rhea</b> 통합 모니터링 시스템
         </router-link>
       </h1>
@@ -16,20 +19,23 @@
           {{ userInfo.department }} {{ userInfo.name }} {{ userInfo.position }}님
         </span>
         <a href="/logout" class="btn-logout" title="로그아웃">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" fill="#eee">
-            <path d="M0 0h24v24H0z" fill="none" />
-            <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" />
-          </svg>
+          <i class="fi fi-rr-sign-out" />
         </a>
       </div>
     </div>
     <nav v-if="menuVisible" class="side-menu">
       <ul class="front">
         <li v-for="menu in menuList" :key="menu.name">
-          <router-link v-if="!menu.backoffice" :class="menu.class" :to="menu.resourceUrl" @click.native="toggleMenu">
+          <router-link v-if="!menu.backOffice"
+                       :to="menu.resourceUrl"
+                       :class="menu.class"
+                       @click.native="toggleMenu"
+          >
             {{ menu.name }}
           </router-link>
-          <a v-else :href="menu.resourceUrl">{{ menu.name }}</a>
+          <a v-else :href="menu.resourceUrl" :class="menu.class">
+            {{ menu.name }}
+          </a>
         </li>
       </ul>
     </nav>
@@ -47,7 +53,7 @@ export default defineComponent({
   name: 'GNB',
   props: {
   },
-  setup() {
+  setup(props, { emit }) {
     const { instance } = getInstance();
     const state = reactive({
       userInfo: computed(() => instance.$store.state.global.userInfo),
@@ -59,21 +65,27 @@ export default defineComponent({
 
     const toggleMenu = ():void => {
       state.menuVisible = !state.menuVisible;
+      if (state.menuVisible === false) {
+        emit('reload');
+      }
+    };
+    const goHome = ():void => {
+      emit('reload');
     };
 
     const checkMenuVisible = (): boolean => state.menuVisible;
 
     const setMenuList = () => {
       if (state.menuListOrigin.length === 0) return;
-      const menuList = Object.keys(MENU_INFO).map((key) => {
+      let menuList = Object.keys(MENU_INFO).map((key) => {
         let menu = MENU_INFO[key];
         [...state.menuListOrigin].filter((m) => m.status === 'ACTIVE').forEach((v) => {
           if (v.name !== menu.name) return;
-          if (menu.name === 'Admin' && !state.isAdmin) return;
           menu = { ...menu, ...v };
         });
         return menu;
       });
+      if (!state.isAdmin) menuList = menuList.filter((m) => m.name !== 'Admin');
       instance.$store.commit('global/setMenuList', menuList);
     };
 
@@ -97,6 +109,7 @@ export default defineComponent({
       ...toRefs(state),
       toggleMenu,
       checkMenuVisible,
+      goHome,
     };
   },
 });
@@ -144,7 +157,7 @@ export default defineComponent({
   border-bottom: 1px solid #e9e9e9;
 }
 .side-menu li a:hover {
-  font-weight: 700;
+  font-weight: bold;
 }
 .side-menu .menu-01 {background-image: url(~@/assets/icons/ic_menu_01.png);}
 .side-menu .menu-02 {background-image: url(~@/assets/icons/ic_menu_02.png);}
@@ -172,8 +185,8 @@ export default defineComponent({
   position: absolute;
   top: 0;
   left: 0;
-  width: 32px;
-  height: 32px;
+  width: 2rem;
+  height: 2rem;
   background-repeat: no-repeat;
   background-position: left 2px center;
   background-image: url(~@/assets/images/bi.svg);
@@ -205,11 +218,8 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   align-items: center;
+  color: #eee;
   border-left: 1px solid rgb(255 255 255 / 15%);
-}
-.header .btn-logout svg {
-  width: 20px;
-  height: 20px;
 }
 
 .util {

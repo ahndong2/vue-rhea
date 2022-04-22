@@ -1,6 +1,6 @@
 const MENU_INFO = {
   HOME: {
-    name: 'home',
+    name: 'Home',
     backOffice: false,
     class: 'menu-01',
     resourceUrl: '/',

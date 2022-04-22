@@ -1,11 +1,9 @@
 <template>
   <select :id="id" v-model="selectValue" :name="name" :title="title"
-          :class="className" @change="changeEvent"
+          :class="className" class="slt"
+          @change="changeEvent"
   >
-    <!-- <option v-if="title && !value" value="" disabled>
-      {{ title }}
-    </option> -->
-    <option v-for="(opt,idx) in selectOptions" :key="idx" :value="opt.value">
+    <option v-for="(opt,idx) in selectOptions" :key="idx" :value="opt.value" :disabled="opt.disabled">
       {{ opt.label }}
     </option>
   </select>
@@ -31,9 +29,13 @@ export default {
       type: String,
       default: '',
     },
+    none: {
+      type: String,
+      default: '',
+    },
     className: {
       type: String,
-      default: 'slt',
+      default: '',
     },
     options: {
       type: Array,
@@ -48,8 +50,8 @@ export default {
     const state = reactive({
       selectOptions: computed(() => {
         const opts = [...props.options];
-        if (props.title) {
-          opts.unshift({ label: props.title, value: '' });
+        if (props.none) {
+          opts.unshift({ label: props.none, value: '' });
         }
         return opts;
       }),
@@ -68,7 +70,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-
-</style>

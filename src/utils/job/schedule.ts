@@ -31,6 +31,15 @@ const eventUnresolved = () => {
   store.dispatch('event/getAlertStatusData', 2);
   store.dispatch('event/getEventUnresolvedData');
 };
+const eventInit = () => {
+  store.commit('event/initData');
+};
+const monitoringInit = () => {
+  store.commit('monitoring/initData');
+};
+const alertStatusDefault = () => {
+  store.commit('monitoring/setActiveType', 'RESOURCE');
+};
 
 // 페이지 라우팅시 스케쥴 시작/다른것 제거
 export const apiSchedule = (to):void => {
@@ -45,13 +54,21 @@ export const apiSchedule = (to):void => {
       refreshSchedule(dashboardRefreshTime, dashboard);
       break;
     case 'Event':
-      if (to.query.tabKey === 'Occurred') {
+      eventInit();
+      alertStatusDefault();
+      if (to.params.tabKey === 'Occurred') {
         eventOccurred();
         refreshSchedule(eventOccurredRefreshTime, eventOccurred);
-      } else if (to.query.tabKey === 'Unresolved') {
+      } else if (to.params.tabKey === 'Unresolved') {
         eventUnresolved();
         refreshSchedule(eventUnresolvedRefreshTime, eventUnresolved);
+      } else {
+        clearSchedule();
       }
+      break;
+    case 'Monitoring':
+      monitoringInit();
+      alertStatusDefault();
       break;
     default:
       break;

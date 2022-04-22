@@ -1,3 +1,8 @@
+// component
+interface SelectBoxType {
+  label?: string;
+  value?: string;
+}
 // board
 interface Board {
   description?: string;
@@ -28,11 +33,17 @@ interface NoticePost {
   title: string;
   content: string;
 }
+interface NoticeComment {
+  id: number;
+  content: string;
+  regDate: number;
+}
 interface BoardState {
   dashBoardNoticeBoardList?: Array<Notice>;
   noticeBoard?: NoticeBoard;
   searchParam?: BoardSearchParam;
   noticePost?: NoticePost;
+  commentList?: Array<NoticeComment>;
 }
 
 // global
@@ -68,8 +79,11 @@ interface Menu {
 interface GlobalState {
   userInfo?: UserInfo;
   spinner? : boolean;
+  apiRequestCount? : number;
+  apiResponseCount? : number;
   menuListOrigin?: Menu[];
   menuList?: Menu[];
+  topBtn?: boolean;
 }
 
 // monitoring
@@ -78,6 +92,7 @@ interface GroupInfo{
   description?: string;
   groupName?: string;
   id?: number
+  name?: string;
   jobName?: string;
   modifier?: string;
   modifyDate?: string;
@@ -107,6 +122,7 @@ interface Prometheus{
   useYn?: string;
   userId?: string;
   userPw?: string;
+  groupinfoUseYnCnt?: number;
 }
 interface OrgMonitoringList {
   creator?: string;
@@ -115,9 +131,11 @@ interface OrgMonitoringList {
   modifier?: string;
   modifyDate?: string;
   name?: string;
+  fullName?: string;
   prometheuses?: Array<Prometheus>;
   registDate?: string;
   useYn?: string;
+  prometheusesUseYnCnt?: number;
 }
 interface SummaryType {
   label?: string;
@@ -135,8 +153,50 @@ interface DashboardState {
   dayUnresolvedCnt?:number;
   totalUnresolvedCnt?:number;
   orgMonitoringList?: [];
+  orgMonitoringNameList?: [];
 }
 
+interface Resource {
+  CPU?: number;
+  Memory?: number;
+  Storage?: number;
+  NetworkReception?: number;
+  Node?: number;
+  Pod?: number;
+  PodError?: number;
+  BlackBox?: number;
+  ThreadConnections?: number;
+  MaxUsedConnections?: number;
+  SelectScan?: number;
+  SlowQueries?: number;
+  TableLocksImmediate?: number;
+  TableLocksWaited?: number;
+}
+interface AlertStatus {
+  TotalResourcesCnt?: number;
+  organizationId?: number;
+  organizationName?: string;
+  prometheusId?: number;
+  prometheusName?: string;
+  groupId?: number;
+  groupName?: string;
+  resourceList?: Resource;
+}
+interface AlertStatusData {
+  totalUnconfirmedCnt?: number;
+  resourceUnconfirmedCnt?: number;
+  nativeUnconfirmedCnt?: number;
+  dbUnconfirmedCnt?: number;
+  serviceUnconfirmedCnt?: number;
+  clearTotalUnconfirmedCnt?: number;
+  RESOURCE?: AlertStatus[];
+  SERVICE?: AlertStatus[];
+  DB?: AlertStatus[];
+  NATIVE?: AlertStatus[];
+  PROCESS?: AlertStatus[];
+  K8S?: AlertStatus[];
+  RHEA?: AlertStatus[];
+}
 interface EventSearchParam {
   refreshTime?: number;
   searchDuring?: number;
@@ -151,7 +211,7 @@ interface EventSearchParam {
 
 interface EventLog {
   id?: number;
-  organizaionId?: number;
+  organizationId?: number;
   prometheusId?: number;
   groupId?: number;
   resourceType?: string;
@@ -169,6 +229,8 @@ interface EventLog {
   orgNm?: string;
   prometheusNm?: string;
   groupInfoNm?: string;
+  impactFlowId?: number;
+  status?: string;
   csp?: string;
   [key:string]: unknown;
 }
@@ -189,17 +251,61 @@ interface EventIgnoreReason {
   registDate?: number;
   modifyDate?: number;
 }
+
+interface AlarmGroupUser {
+  alertLevel?: string;
+  email?: string;
+  groupName?: string;
+  id?: string;
+  organizationName?: string;
+  phoneNumber?: string;
+  pressureOfBusiness?: string;
+  receptionNames?: string;
+}
+
+interface UnknownList {
+  dataSourceUrl?: string;
+  externalLabel?: string;
+  groupName?: string;
+  id?: number;
+  jobName?: string;
+  lastCheckDate?: string;
+  projectName?: string;
+  registDate?: string;
+  releaseDate?: string;
+  releaseYn?: string;
+}
+interface ImpactFlowData {
+  id?: number;
+  status?: string;
+  memo?: string;
+  solver?: string;
+  processingDate?: string;
+}
+interface UnknownDataSource {
+  id?: number;
+  name?: string;
+  oneDepthOrganizationName?: string;
+  twoDepthOrganizationName?: string;
+  description?: string;
+  prometheusId ?: string;
+}
 interface EventState {
   occurred?: EventSearchParam;
   unresolved?: EventSearchParam;
   ignore?: EventSearchParam;
-  orgList?: [];
+  organizationList?: OrgMonitoringList[];
+  unknownCount?: number;
   eventOccurredList: Array<EventLog>;
   eventUnresolvedList : Array<EventLog>;
   eventIgnoreList: Array<EventLog>;
   ignoreReason: EventIgnoreReason;
-  occurredAlertStatusData?: [];
-  unresolvedAlertStatusData?: [];
+  occurredAlertStatusData?: AlertStatusData;
+  unresolvedAlertStatusData?: AlertStatusData;
+  impactFlowData?: ImpactFlowData;
+  unknownListTable?: UnknownList[];
+  unknown?: EventSearchParam;
+  unknownDataSourceList?: UnknownDataSource[]
 }
 interface MetricData {
   __name__?: string;
@@ -218,41 +324,92 @@ interface Monitoring {
   value?: [];
   values?: [];
 }
-interface ChartData {
+interface NodeList {
+  readyCount?: number;
+  diskPressureCount?: number;
+  memoryPressureCount?: number;
+  pidPressureCount?: number;
+  networkUnavailableCount?: number;
+  nodeDisabledList?: Monitoring[];
+  nodeAbledList?: Monitoring[];
+}
+interface PodList {
+  pendingCount?: number;
+  runningCount?: number;
+  succeededCount?: number;
+  failedCount?: number;
+  unknownCount?: number;
+  podDisabledList?: Monitoring[];
+  podAbledList?: Monitoring[];
+}
+interface PodPvStatusList {
+  availableCount?: number;
+  boundCount?: number;
+  releasedCount?: number;
+  failedCount?: number;
+  pendingCount?: number;
+  podAbledList?: Monitoring[];
+  podDisabledList?: Monitoring[];
+}
+interface MonitoringData {
   cpuList?: Monitoring[];
   memoryList?: Monitoring[];
   storageList?: Monitoring[];
   networkReceptionList?: Monitoring[];
   networkSendList?: Monitoring[];
   systemLoadList?: Monitoring[];
-  nodeList?: Monitoring[];
-  podList?: Monitoring[];
-  podErrorList?:Monitoring[];
+  nodeList?: NodeList;
+  podList?: PodList;
+  podErrorList?: Monitoring[];
+  PodPvStatusList?: PodPvStatusList;
+  podCpuList?: Monitoring[];
+  podMemoryList?: Monitoring[];
 }
 interface MonitoringDetail {
   id?: number;
   name?: string;
-  chartData?: ChartData;
   isOpen?: boolean;
+  installationType?: string;
   [key:string]: unknown;
 }
+interface MonitoringType {
+  key?: string;
+  name?: string;
+  searchType?: string;
+}
+
 interface SearchData {
+  id?: number;
   organizationId?: string;
   prometheusId?: string;
   startDate?: string;
   endDate?: string;
+  start?: string;
+  end?: string;
   refreshTime?: number;
   searchDuring?: number;
+  monitoringType?: MonitoringType;
+  key?: string;
+  installationType?: string;
   [key:string]: unknown;
+}
+interface PrometheusInfo {
+  name?: string;
+  csp?: string;
+  installationType?: string;
+  grafanaLink?: string;
+  description?: string;
 }
 interface MonitoringState {
   searchData?:SearchData;
-  alertStatusList?: [];
-  organizationList?: [];
-  prometheusList?: [];
+  alertStatusList?: AlertStatusData;
+  organizationList?: OrgMonitoringList[];
+  prometheusList?: Prometheus[];
   groupJobsList?: MonitoringDetail[];
   activeIdx?:number;
-  prometheusInfo?: {};
+  prometheusInfo?: PrometheusInfo;
+  monitoringData?: MonitoringData;
+  activeType?: string;
 }
 // root state
 interface RootState {
@@ -265,9 +422,11 @@ interface RootState {
 
 export {
   RootState,
+  SelectBoxType,
   GlobalState, UserInfo, Menu,
   DashboardState, SummaryType, OrgMonitoringList, Prometheus, GroupInfo, AlertObj,
-  BoardState, Notice, Board, BoardSearchParam, NoticeBoard, NoticePost,
-  EventState, EventLog, EventSearchParam,
-  MonitoringState, MonitoringDetail, Monitoring, MetricData, ChartData, SearchData,
+  BoardState, Notice, Board, BoardSearchParam, NoticeBoard, NoticePost, NoticeComment,
+  EventState, EventLog, EventSearchParam, UnknownList, AlarmGroupUser, UnknownDataSource,
+  Resource, AlertStatus, AlertStatusData,
+  MonitoringState, MonitoringDetail, Monitoring, MetricData, SearchData,
 };
