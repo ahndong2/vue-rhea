@@ -21,13 +21,13 @@ printf '===========================\n'
 mv dist vue
 
 # rheapjt-rheaspringboot clone
-git clone -b develop https://kronos:elwlxjf12@vcs.digitalkds.co.kr/rheapjt/rheapjt-rheaspringboot
+git clone -b develop ${GIT_URL}
 rm -r -f ${WORKSPACE}/rheapjt-rheaspringboot/frontoffice/src/main/resources/templates/vue
 \cp -rf ${WORKSPACE}/vue/ ${WORKSPACE}/rheapjt-rheaspringboot/frontoffice/src/main/resources/templates/vue
 cd rheapjt-rheaspringboot
 
 # rheapjt-rheaspringboot remote
-git remote set-url origin https://kronos:elwlxjf12@vcs.digitalkds.co.kr/rheapjt/rheapjt-rheaspringboot
+git remote set-url origin ${GIT_URL}
 git add -A
 git commit -a -m "Rhea-Front jenkins Build (`date +'%Y-%m-%d %H:%M:%S'`)"
 git push -u origin develop
